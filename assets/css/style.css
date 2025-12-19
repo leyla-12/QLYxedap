@@ -1,115 +1,107 @@
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:#f4f6f9;display:flex;color:#1f2937}
-
-/* Sidebar */
-.sidebar{
-  width:250px;
-  background:linear-gradient(180deg,#111827,#1f2937);
-  color:#fff;
-  min-height:100vh;
-}
-.sidebar h2{
-  text-align:center;
-  padding:20px;
-  font-size:22px;
-  letter-spacing:1px;
-  background:#020617;
-}
-.sidebar ul{list-style:none;margin-top:10px}
-.sidebar ul li a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 22px;
-  color:#e5e7eb;
-  text-decoration:none;
-  transition:all .25s ease;
-}
-.sidebar ul li a:hover{
-  background:#2563eb;
-  color:#fff;
-}
-.sidebar i{width:20px;text-align:center}
-
-/* Main */
-.main{flex:1}
-
-/* Header */
-.header{
-  background:#fff;
-  padding:16px 24px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-.header h3{font-size:20px}
-.header span{
-  background:#e0e7ff;
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:14px;
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Content */
-.content{padding:24px}
-
-/* Cards */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-.card{
-  background:#fff;
-  padding:22px;
-  border-radius:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
-  transition:transform .2s ease;
-}
-.card:hover{transform:translateY(-4px)}
-.card h4{font-size:15px;color:#6b7280}
-.card span{
-  font-size:30px;
-  font-weight:700;
-  color:#2563eb;
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f5f7fb;
+  color: #374151;
 }
 
-/* Table */
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  margin-top:24px;
-  border-radius:12px;
-  overflow:hidden;
+/* LAYOUT */
+.sidebar {
+  width: 240px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg,#111827,#1f2937);
+  color: #fff;
+  padding: 20px;
 }
-table th{
-  background:#f1f5f9;
-  padding:14px;
-  text-align:left;
-  font-weight:600;
+
+.sidebar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 30px;
 }
-table td{
-  padding:14px;
-  border-top:1px solid #e5e7eb;
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: #c7d2fe;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 6px;
 }
-table tr:hover{background:#f9fafb}
-/* ==== Add-on components for pages (badge, grid, tabs, form rows) ==== */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width: 980px){.grid2{grid-template-columns:1fr}}
 
-.formrow{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin:10px 0}
-@media (max-width: 980px){.formrow{grid-template-columns:1fr}}
+.sidebar a.active,
+.sidebar a:hover {
+  background: #2563eb;
+  color: #fff;
+}
 
-.badge{padding:4px 10px;border-radius:999px;font-weight:800;font-size:12px;display:inline-block}
-.b-ok{background:#dcfce7;color:#166534}
-.b-warn{background:#fef9c3;color:#854d0e}
-.b-bad{background:#fee2e2;color:#991b1b}
-.b-run{background:#dbeafe;color:#1d4ed8}
-.b-done{background:#dcfce7;color:#166534}
+/* MAIN */
+main {
+  margin-left: 260px;
+  padding: 24px;
+}
 
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.tab{padding:8px 12px;border-radius:999px;background:#f3f4f6;cursor:pointer;font-weight:800;color:#374151}
-.tab.active{background: var(--primary);color:#fff}
-.report{margin-top:12px}
+h1 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+/* CARD */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+  margin-bottom: 20px;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f1f5f9;
+  text-align: left;
+  padding: 12px;
+  font-weight: 700;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* BUTTON */
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn.ghost {
+  background: #eef2ff;
+  color: #1e3a8a;
+}
