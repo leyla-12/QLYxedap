@@ -94,6 +94,15 @@
     </div>
   </main>
 </div>
+<script>
+  (function(){
+    const s = localStorage.getItem("TNGO_SESSION") 
+           || sessionStorage.getItem("TNGO_SESSION");
+    if(!s){
+      location.href = "./dang-nhap.html";
+    }
+  })();
+</script>
 
 <script src="./assets/js/script.js"></script>
 </body>
