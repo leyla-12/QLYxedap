@@ -9,94 +9,343 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/style.css" />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card: rgba(15, 23, 42, .55);
+      --stroke: rgba(148,163,184,.25);
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --blue:#2563eb;
+      --blue2:#1d4ed8;
+      --danger:#ef4444;
+      --ok:#22c55e;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: var(--bg);
+      overflow:hidden;
+    }
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(37,99,235,.25), transparent 60%),
+        radial-gradient(900px 600px at 90% 90%, rgba(34,197,94,.18), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.6)),
+        url("./assets/img/login-bg.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05);
+      transform: scale(1.03);
+    }
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(2,6,23,.25);
+      backdrop-filter: blur(2px);
+    }
+    .wrap{
+      position:relative;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:0;
+      border-radius: var(--radius);
+      border:1px solid var(--stroke);
+      background: linear-gradient(135deg, rgba(15,23,42,.65), rgba(15,23,42,.35));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    /* LEFT: brand + slogan (gọn, không dài dòng) */
+    .left{
+      padding:36px 34px;
+      border-right:1px solid rgba(148,163,184,.18);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height: 520px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .brand i{
+      width:42px; height:42px;
+      display:grid; place-items:center;
+      border-radius:14px;
+      background: rgba(37,99,235,.18);
+      border:1px solid rgba(37,99,235,.25);
+      color:#93c5fd;
+    }
+    .brand span{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+      margin-top:2px;
+    }
+
+    .hero h1{
+      margin:14px 0 8px;
+      font-size:44px;
+      line-height:1.05;
+      letter-spacing:-.6px;
+    }
+    .hero p{
+      margin:0;
+      color: rgba(226,232,240,.85);
+      max-width: 42ch;
+      line-height:1.6;
+    }
+
+    .social{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .social a{
+      width:40px; height:40px;
+      display:grid; place-items:center;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,.22);
+      background: rgba(2,6,23,.25);
+      color: rgba(226,232,240,.9);
+      text-decoration:none;
+      transition:.2s;
+    }
+    .social a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(37,99,235,.4);
+    }
+
+    /* RIGHT: login form */
+    .right{
+      padding:36px 34px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:16px;
+    }
+    .title{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-.3px;
+      margin:0;
+    }
+    .sub{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:10px;
+    }
+    .label{
+      font-size:13px;
+      color: rgba(226,232,240,.9);
+      font-weight:600;
+    }
+    .input{
+      position:relative;
+    }
+    .input i{
+      position:absolute;
+      left:12px; top:50%;
+      transform:translateY(-50%);
+      color: rgba(148,163,184,.9);
+      font-size:14px;
+    }
+    .input input{
+      width:100%;
+      padding:12px 12px 12px 38px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.25);
+      background: rgba(2,6,23,.25);
+      color: var(--text);
+      outline:none;
+      transition:.2s;
+    }
+    .input input:focus{
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.15);
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:8px;
+    }
+    .check{
+      display:flex; align-items:center; gap:8px;
+      color: rgba(226,232,240,.9);
+      font-size:13px;
+    }
+    .check input{accent-color: var(--blue)}
+    .link{
+      color:#93c5fd;
+      text-decoration:none;
+      font-size:13px;
+    }
+    .link:hover{text-decoration:underline}
+
+    .btn{
+      margin-top:8px;
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      transition:.2s;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+    .msg{
+      display:none;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.25);
+      background: rgba(2,6,23,.25);
+      font-size:13px;
+      line-height:1.4;
+    }
+    .msg.err{border-color: rgba(239,68,68,.35); color:#fecaca}
+    .msg.ok{border-color: rgba(34,197,94,.35); color:#bbf7d0}
+
+    .foot{
+      margin-top:10px;
+      color: rgba(148,163,184,.9);
+      font-size:12px;
+      text-align:center;
+    }
+
+    @media (max-width: 880px){
+      body{overflow:auto}
+      .bg{transform:none}
+      .card{grid-template-columns:1fr}
+      .left{border-right:none; border-bottom:1px solid rgba(148,163,184,.18); min-height:auto}
+      .hero h1{font-size:34px}
+    }
+  </style>
 </head>
 
-<body class="login-page">
-  <div class="login-bg"></div>
-  <div class="login-wrap">
-    <div class="login-card">
-      <div class="login-head">
-        <div class="login-brand">
+<body>
+  <div class="bg"></div>
+  <div class="overlay"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <!-- LEFT -->
+      <div class="left">
+        <div class="brand">
           <i class="fa-solid fa-bicycle"></i>
-          <span>TNGO Bike</span>
+          <div>
+            TNGO Bike
+            <span>Public Bike Admin</span>
+          </div>
         </div>
 
-        <div class="login-title">
-          <div class="login-app">Quản lý xe đạp công cộng</div>
+        <div class="hero">
           <h1>Đăng nhập</h1>
-          <p>Vui lòng đăng nhập để tiếp tục</p>
+          <p>Đăng nhập theo phân quyền để quản lý trạm xe, xe đạp, khách hàng, chuyến đi, hoá đơn và báo cáo.</p>
+        </div>
+
+        <div class="social">
+          <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" title="Google"><i class="fa-brands fa-google"></i></a>
+          <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
         </div>
       </div>
 
-      <form id="loginForm" class="login-form" autocomplete="on">
-        <label class="login-label">Tài khoản</label>
-        <div class="login-field">
-          <i class="fa-solid fa-user"></i>
-          <input id="loginUser" name="username" placeholder="Nhập tài khoản..." required />
-        </div>
+      <!-- RIGHT -->
+      <div class="right">
+        <h2 class="title">TNGO Panel</h2>
+        <p class="sub">Nhập tài khoản và mật khẩu để tiếp tục.</p>
 
-        <label class="login-label" style="margin-top:10px;">Mật khẩu</label>
-        <div class="login-field">
-          <i class="fa-solid fa-lock"></i>
-          <input id="loginPass" name="password" type="password" placeholder="Nhập mật khẩu..." required />
-          <button class="login-eye" type="button" id="togglePass" title="Hiện/ẩn mật khẩu">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-        </div>
-
-        <div class="login-row">
-          <label class="login-check">
-            <input type="checkbox" id="rememberMe" />
-            <span>Ghi nhớ đăng nhập</span>
-          </label>
-          <a class="login-link" href="#" onclick="return false;">Quên mật khẩu?</a>
-        </div>
-
-        <button class="login-btn" type="submit">
-          <i class="fa-solid fa-right-to-bracket"></i>
-          Đăng nhập
-        </button>
-
-        <div id="loginMsg" class="login-msg" style="display:none;"></div>
-
-        <div class="login-footer">
-          <div class="login-social">
-            <a class="social-btn" href="#" onclick="return false;" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a class="social-btn" href="#" onclick="return false;" title="Google"><i class="fa-brands fa-google"></i></a>
-            <a class="social-btn" href="#" onclick="return false;" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        <form id="loginForm" autocomplete="on">
+          <div class="field">
+            <div class="label">Tài khoản</div>
+            <div class="input">
+              <i class="fa-solid fa-user"></i>
+              <input id="loginUser" placeholder="VD: ADMIN01" required />
+            </div>
           </div>
-          <div class="login-copy">© TNGO Bike</div>
-        </div>
-      </form>
+
+          <div class="field">
+            <div class="label">Mật khẩu</div>
+            <div class="input">
+              <i class="fa-solid fa-lock"></i>
+              <input id="loginPass" type="password" placeholder="Nhập mật khẩu" required />
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="check">
+              <input id="rememberMe" type="checkbox" checked />
+              Ghi nhớ đăng nhập
+            </label>
+            <a class="link" href="#" onclick="alert('Demo FE: chưa triển khai quên mật khẩu.'); return false;">Quên mật khẩu?</a>
+          </div>
+
+          <div id="loginMsg" class="msg"></div>
+
+          <button id="btnLogin" class="btn" type="submit">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Đăng nhập
+          </button>
+
+          <div class="foot">© TNGO Bike — Front-end demo (LocalStorage)</div>
+        </form>
+      </div>
     </div>
   </div>
 
+  <!-- dùng chung script -->
   <script src="./assets/js/script.js"></script>
 
-  <!-- Nếu script.js chưa có toggle pass + login form thì đoạn này tự hỗ trợ -->
   <script>
-    // Toggle password
-    const pass = document.getElementById("loginPass");
-    const toggle = document.getElementById("togglePass");
-    toggle?.addEventListener("click", () => {
-      const isPwd = pass.type === "password";
-      pass.type = isPwd ? "text" : "password";
-      toggle.querySelector("i").className = isPwd ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
-    });
-
-    // Nếu bạn đã xử lý login trong script.js thì bỏ đoạn dưới cũng được
+    // đảm bảo trang login KHÔNG bị đá văng sai
+    // (script.js đã có guardAuth; nó sẽ cho login page chạy bình thường)
     const form = document.getElementById("loginForm");
-    const msg = document.getElementById("loginMsg");
+    const msg  = document.getElementById("loginMsg");
 
-    form?.addEventListener("submit", (e) => {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-      msg.style.display = "block";
-      msg.className = "login-msg ok";
-      msg.textContent = "Đang đăng nhập...";
+      const username = document.getElementById("loginUser").value;
+      const password = document.getElementById("loginPass").value;
+      const remember = document.getElementById("rememberMe").checked;
 
-      // Ví dụ: chuyển trang (tuỳ bạn đã làm auth trong script.js)
-      setTimeout(() => window.location.href = "index.html", 600);
+      const res = handleLogin(username, password, remember);
+
+      msg.style.display = "block";
+      msg.className = "msg " + (res.ok ? "ok" : "err");
+      msg.textContent = res.msg;
+
+      if (res.ok) setTimeout(() => location.href = "index.html", 300);
     });
   </script>
 </body>
