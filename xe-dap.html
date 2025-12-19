@@ -2,162 +2,110 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quản lý xe đạp</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
+
 <body>
-
-<aside class="sidebar">
-  <div class="brand">
-    <div class="brand-logo"><i class="fa-solid fa-bicycle"></i></div>
-    <div class="brand-text">
-      <div class="brand-name">TNGO Bike</div>
-      <div class="brand-sub">Admin Panel</div>
+<div class="container">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><i class="fa-solid fa-bicycle"></i></div>
+      <div class="title"><b>TNGO Bike</b><span>Admin Panel</span></div>
     </div>
-  </div>
+    <div class="nav-title">Navigation</div>
+    <ul class="nav">
+      <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+      <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
+      <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
+      <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
+      <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
+      <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
+      <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
+    </ul>
+  </aside>
 
-  <nav class="menu">
-    <div class="menu-title">Navigation</div>
-    <a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-    <a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i><span>Quản lý trạm xe</span></a>
-    <a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i><span>Quản lý xe đạp</span></a>
-    <a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i><span>Quản lý khách hàng</span></a>
-    <a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i><span>Quản lý chuyến đi</span></a>
-    <a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i><span>Quản lý hoá đơn</span></a>
-    <a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i><span>Báo cáo thống kê</span></a>
-  </nav>
-</aside>
-
-<main class="main">
-  <header class="topbar">
-    <div class="page-title">
-      <h3>Quản lý xe đạp</h3>
-      <span class="muted">Vai trò Nhân viên: Thêm/Cập nhật/Tra cứu (không xoá)</span>
-    </div>
-
-    <div class="topbar-right">
-      <div class="search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input placeholder="Tìm nhanh..." />
-      </div>
-      <button class="icon-btn" title="Thông báo"><i class="fa-regular fa-bell"></i></button>
-      <div class="profile">
-        <img src="https://i.pravatar.cc/40?img=3" alt="avatar">
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-inner">
         <div>
-          <div class="profile-name">Admin</div>
-          <div class="profile-role">Quản trị viên</div>
+          <div class="breadcrumb">Quản lý / Xe đạp</div>
+          <div class="page-title">Quản lý xe đạp</div>
+        </div>
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
+          <input id="bikeSearch" placeholder="Tìm theo mã xe (VD: XE001)..." />
+        </div>
+        <div class="profile">
+          <div class="avatar">AD</div>
+          <div class="who"><b>Admin</b><span>Quản trị viên</span></div>
         </div>
       </div>
     </div>
-  </header>
 
-  <section class="page">
-    <div class="panel">
-      <h4>Bộ lọc</h4>
-      <div class="toolbar">
-        <input class="input" placeholder="Tìm theo mã xe (VD: XE001)..." />
-        <select class="select">
-          <option value="">Lọc theo trạng thái</option>
-          <option>đang đậu</option>
-          <option>đang thuê</option>
-          <option>bảo trì</option>
-        </select>
-        <select class="select">
-          <option value="">Lọc theo trạm</option>
-          <option>TR01 - Cầu Giấy</option>
-          <option>TR02 - Dịch Vọng</option>
-          <option>TR03 - Trần Duy Hưng</option>
-        </select>
-        <button class="btn primary"><i class="fa-solid fa-plus"></i> Thêm xe</button>
-        <button class="btn ghost"><i class="fa-solid fa-file-export"></i> Xuất danh sách</button>
+    <div class="grid">
+      <div class="card">
+        <div class="card-h">
+          <b>Danh sách xe</b>
+          <div class="row">
+            <select class="select" id="bikeStatusFilter">
+              <option value="">Lọc theo trạng thái</option>
+              <option>đang đậu</option>
+              <option>đang thuê</option>
+              <option>bảo trì</option>
+            </select>
+            <select class="select" id="bikeStationFilter">
+              <option value="">Lọc theo trạm</option>
+            </select>
+            <button class="btn ghost" id="exportBikes"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <table class="table">
+            <thead>
+              <tr><th>Mã xe</th><th>Trạng thái</th><th>Trạm quản lý</th><th>Hành động</th></tr>
+            </thead>
+            <tbody id="bikeTbody"></tbody>
+          </table>
+          <div class="note">Bấm “Cập nhật” sẽ đổ dữ liệu lên form bên phải.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><b>Thêm / Cập nhật xe</b></div>
+        <div class="card-b">
+          <div class="field">
+            <div class="label">Mã xe (để trống để tự sinh)</div>
+            <input class="input" id="bikeId" placeholder="VD: XE120" />
+          </div>
+          <div class="field">
+            <div class="label">Trạng thái</div>
+            <select class="select" id="bikeStatus">
+              <option>đang đậu</option>
+              <option>đang thuê</option>
+              <option>bảo trì</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="label">Trạm</div>
+            <select class="select" id="bikeStation"></select>
+          </div>
+          <div style="margin-top:10px">
+            <button class="btn primary" id="btnSaveBike"><i class="fa-solid fa-floppy-disk"></i>Lưu thay đổi</button>
+          </div>
+          <div class="note">Nếu xe “đang thuê” thì trạm chỉ mang tính quản lý demo (FE).</div>
+        </div>
       </div>
     </div>
+  </main>
+</div>
 
-    <div class="grid2" style="margin-top:16px;">
-      <div class="panel">
-        <h4>Danh sách xe</h4>
-        <table>
-          <tr>
-            <th>Mã xe</th>
-            <th>Trạng thái</th>
-            <th>Trạm quản lý</th>
-            <th>Hành động</th>
-          </tr>
-          <tr>
-            <td>XE001</td>
-            <td><span class="badge b-ok">đang đậu</span></td>
-            <td>TR01 - Cầu Giấy</td>
-            <td><button class="btn ghost"><i class="fa-solid fa-pen"></i> Cập nhật</button></td>
-          </tr>
-          <tr>
-            <td>XE014</td>
-            <td><span class="badge b-warn">đang thuê</span></td>
-            <td>TR02 - Dịch Vọng</td>
-            <td><button class="btn ghost"><i class="fa-solid fa-eye"></i> Xem chuyến</button></td>
-          </tr>
-          <tr>
-            <td>XE078</td>
-            <td><span class="badge b-bad">bảo trì</span></td>
-            <td>TR03 - Trần Duy Hưng</td>
-            <td><button class="btn ghost"><i class="fa-solid fa-pen"></i> Cập nhật</button></td>
-          </tr>
-        </table>
-        <span class="muted" style="display:block;margin-top:10px;">
-          * Xe “đang thuê” gắn với 1 chuyến đi đang chạy. Xe “đang đậu” thuộc 1 trạm.
-        </span>
-      </div>
-
-      <div class="panel">
-        <h4>Form cập nhật nhanh</h4>
-
-        <div class="formrow">
-          <div class="muted">Mã xe</div>
-          <input class="input" value="XE001" />
-        </div>
-
-        <div class="formrow">
-          <div class="muted">Trạng thái</div>
-          <select class="select">
-            <option>đang đậu</option>
-            <option>đang thuê</option>
-            <option>bảo trì</option>
-          </select>
-        </div>
-
-        <div class="formrow">
-          <div class="muted">Trạm</div>
-          <select class="select">
-            <option>TR01 - Cầu Giấy</option>
-            <option>TR02 - Dịch Vọng</option>
-            <option>TR03 - Trần Duy Hưng</option>
-          </select>
-        </div>
-
-        <button class="btn primary" style="width:100%;margin-top:10px;">
-          <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
-        </button>
-
-        <span class="muted" style="display:block;margin-top:10px;">
-          * Nếu trạng thái = “đang thuê” thì trạm sẽ không còn là nơi đậu.
-        </span>
-      </div>
-    </div>
-  </section>
-</main>
-
-<script>
-  const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".menu-item").forEach(a=>{
-    if(a.getAttribute("href") === path) a.classList.add("active");
-  });
-</script>
-  <script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js"></script>
 </body>
 </html>
