@@ -325,3 +325,30 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 }
 .social-btn:hover{ background: rgba(148,163,184,.18); }
 .login-copy{ color:#94a3b8; font-size:12px; }
+/* Logout pinned bottom-left inside sidebar (global) */
+.sidebar-logout{
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+}
+
+.logout-btn{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.logout-btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.10);
+}
