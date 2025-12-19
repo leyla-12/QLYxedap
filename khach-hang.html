@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý khách hàng</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,56 +11,18 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/css/style.css" />
-  <title>Quản lý khách hàng</title>
 </head>
 <body>
 
-<!-- sidebar giống index.html -->
-<!-- copy y nguyên sidebar ở trên -->
-
-<main class="main">
-  <header class="topbar">
-    <div class="page-title">
-      <h3>Quản lý khách hàng</h3>
-      <span class="muted">Thông tin khách hàng & số dư ví</span>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo"><i class="fa-solid fa-bicycle"></i></div>
+    <div class="brand-text">
+      <div class="brand-name">TNGO Bike</div>
+      <div class="brand-sub">Admin Panel</div>
     </div>
-  </header>
+  </div>
 
-  <section class="page">
-    <div class="panel">
-      <h4>Danh sách khách hàng</h4>
-      <table>
-        <tr>
-          <th>Mã KH</th><th>Họ tên</th><th>Giới tính</th><th>SĐT</th><th>Số dư</th><th>Hành động</th>
-        </tr>
-        <tr>
-          <td>KH001</td><td>Nguyễn An</td><td>Nữ</td><td>0987xxxx</td>
-          <td><b style="color:#16a34a">120.000đ</b></td>
-          <td><button class="btn ghost">Cập nhật</button></td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="panel">
-      <h4>Tạo hóa đơn nạp tiền (Admin)</h4>
-      <div class="toolbar">
-        <input class="input" placeholder="Mã KH">
-        <input class="input" placeholder="Số tiền nạp">
-        <select class="select">
-          <option>Thành công</option>
-          <option>Thất bại</option>
-        </select>
-        <button class="btn primary">Tạo hóa đơn</button>
-      </div>
-    </div>
-  </section>
-</main>
-
-<script>
-  const path = location.pathname.split("/").pop();
-  document.querySelectorAll(".menu-item").forEach(a=>{
-    if(a.getAttribute("href")===path) a.classList.add("active");
-  });
-</script>
-</body>
-</html>
+  <nav class="menu">
+    <div class="menu-title">Navigation</div>
+    <a class="menu-it
