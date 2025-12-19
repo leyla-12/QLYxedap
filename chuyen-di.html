@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản lý chuyến đi</title>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <style>
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+    .btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
+    .btn.primary{background:#2563eb;color:#fff}
+    .btn.ghost{background:#eef2ff;color:#1f2937}
+    .input, .select{padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;min-width:220px}
+    .badge{padding:4px 10px;border-radius:999px;font-weight:800;font-size:12px;display:inline-block}
+    .b-run{background:#dbeafe;color:#1d4ed8}
+    .b-done{background:#dcfce7;color:#166534}
+    .panel{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px;margin-top:16px}
+    .panel h4{margin-bottom:10px;color:#374151}
+    .note{color:#6b7280;font-size:13px}
+    @media (max-width: 980px){.input,.select{min-width:160px}}
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>TNGO Bike</h2>
+  <ul>
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="tram-xe.html">Quản lý trạm xe</a></li>
+    <li><a href="xe-dap.html">Quản lý xe đạp</a></li>
+    <li><a href="khach-hang.html">Quản lý khách hàng</a></li>
+    <li><a href="chuyen-di.html">Quản lý chuyến đi</a></li>
+    <li><a href="hoa-don.html">Quản lý hoá đơn</a></li>
+    <li><a href="bao-cao.html">Báo cáo thống kê</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="header">
+    <h3>Quản lý chuyến đi</h3>
+    <span class="note">Một khách hàng tại 1 thời điểm chỉ có 1 chuyến đang chạy</span>
+  </div>
+
+  <div class="content">
+    <div class="toolbar">
+      <input class="input" placeholder="Tìm theo mã chuyến / mã KH / mã xe..." />
+      <select class="select">
+        <option value="">Lọc trạng thái</option>
+        <option>đang chạy</option>
+        <option>hoàn tất</option>
+      </select>
+      <button class="btn primary">+ Tạo chuyến (mô phỏng)</button>
+      <button class="btn ghost">Xuất danh sách</button>
+    </div>
+
+    <div class="panel">
+      <h4>Danh sách chuyến đi</h4>
+      <table>
+        <tr>
+          <th>Mã chuyến</th>
+          <th>Mã KH</th>
+          <th>Mã xe</th>
+          <th>Trạm thuê</th>
+          <th>Thời gian thuê</th>
+          <th>Trạm trả</th>
+          <th>Thời gian trả</th>
+          <th>Tổng cước</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+        <tr>
+          <td>CD1001</td>
+          <td>KH001</td>
+          <td>XE014</td>
+          <td>TR02</td>
+          <td>19/12/2025 14:05</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td><span class="badge b-run">đang chạy</span></td>
+          <td><button class="btn ghost">Kết thúc</button></td>
+        </tr>
+        <tr>
+          <td>CD0998</td>
+          <td>KH014</td>
+          <td>XE001</td>
+          <td>TR01</td>
+          <td>18/12/2025 09:12</td>
+          <td>TR03</td>
+          <td>18/12/2025 09:45</td>
+          <td>12.000đ</td>
+          <td><span class="badge b-done">hoàn tất</span></td>
+          <td><button class="btn ghost">Xem</button></td>
+        </tr>
+      </table>
+
+      <div class="note" style="margin-top:10px;">
+        * Khi kết thúc chuyến, hệ thống cập nhật thời gian trả, tính tiền cước và trừ ví + tạo hoá đơn trả cước.
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

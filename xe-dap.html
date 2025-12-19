@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản lý xe đạp</title>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <style>
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+    .btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
+    .btn.primary{background:#2563eb;color:#fff}
+    .btn.ghost{background:#eef2ff;color:#1f2937}
+    .input, .select{padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;min-width:220px}
+    .badge{padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+    .b-ok{background:#dcfce7;color:#166534}
+    .b-warn{background:#fef9c3;color:#854d0e}
+    .b-bad{background:#fee2e2;color:#991b1b}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .panel{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px}
+    .panel h4{margin-bottom:10px;color:#374151}
+    .formrow{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin:10px 0}
+    .note{color:#6b7280;font-size:13px}
+    @media (max-width: 980px){.grid2{grid-template-columns:1fr}.input,.select{min-width:160px}}
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>TNGO Bike</h2>
+  <ul>
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="tram-xe.html">Quản lý trạm xe</a></li>
+    <li><a href="xe-dap.html">Quản lý xe đạp</a></li>
+    <li><a href="khach-hang.html">Quản lý khách hàng</a></li>
+    <li><a href="chuyen-di.html">Quản lý chuyến đi</a></li>
+    <li><a href="hoa-don.html">Quản lý hoá đơn</a></li>
+    <li><a href="bao-cao.html">Báo cáo thống kê</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="header">
+    <h3>Quản lý xe đạp</h3>
+    <span class="note">Vai trò Nhân viên: Thêm/Cập nhật/Tra cứu (không xoá)</span>
+  </div>
+
+  <div class="content">
+    <div class="toolbar">
+      <input class="input" placeholder="Tìm theo mã xe (VD: XE001)..." />
+      <select class="select">
+        <option value="">Lọc theo trạng thái</option>
+        <option>đang đậu</option>
+        <option>đang thuê</option>
+        <option>bảo trì</option>
+      </select>
+      <select class="select">
+        <option value="">Lọc theo trạm</option>
+        <option>TR01 - Cầu Giấy</option>
+        <option>TR02 - Dịch Vọng</option>
+        <option>TR03 - Trần Duy Hưng</option>
+      </select>
+      <button class="btn primary">+ Thêm xe</button>
+      <button class="btn ghost">Xuất danh sách</button>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h4>Danh sách xe</h4>
+        <table>
+          <tr>
+            <th>Mã xe</th>
+            <th>Trạng thái</th>
+            <th>Trạm quản lý</th>
+            <th>Hành động</th>
+          </tr>
+          <tr>
+            <td>XE001</td>
+            <td><span class="badge b-ok">đang đậu</span></td>
+            <td>TR01 - Cầu Giấy</td>
+            <td><button class="btn ghost">Cập nhật</button></td>
+          </tr>
+          <tr>
+            <td>XE014</td>
+            <td><span class="badge b-warn">đang thuê</span></td>
+            <td>TR02 - Dịch Vọng</td>
+            <td><button class="btn ghost">Xem chuyến</button></td>
+          </tr>
+          <tr>
+            <td>XE078</td>
+            <td><span class="badge b-bad">bảo trì</span></td>
+            <td>TR03 - Trần Duy Hưng</td>
+            <td><button class="btn ghost">Cập nhật</button></td>
+          </tr>
+        </table>
+        <div class="note" style="margin-top:10px;">
+          * Xe “đang thuê” gắn với 1 chuyến đi đang chạy. Xe “đang đậu” thuộc 1 trạm.
+        </div>
+      </div>
+
+      <div class="panel">
+        <h4>Form cập nhật nhanh</h4>
+        <div class="formrow">
+          <div class="note">Mã xe</div>
+          <input class="input" value="XE001"/>
+        </div>
+        <div class="formrow">
+          <div class="note">Trạng thái</div>
+          <select class="select">
+            <option>đang đậu</option>
+            <option>đang thuê</option>
+            <option>bảo trì</option>
+          </select>
+        </div>
+        <div class="formrow">
+          <div class="note">Trạm</div>
+          <select class="select">
+            <option>TR01 - Cầu Giấy</option>
+            <option>TR02 - Dịch Vọng</option>
+            <option>TR03 - Trần Duy Hưng</option>
+          </select>
+        </div>
+        <button class="btn primary" style="width:100%;margin-top:10px;">Lưu thay đổi</button>
+        <div class="note" style="margin-top:10px;">
+          * Nếu trạng thái = “đang thuê” thì trạm sẽ không còn là nơi đậu.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

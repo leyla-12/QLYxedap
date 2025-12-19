@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Báo cáo thống kê</title>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <style>
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+    .btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
+    .btn.primary{background:#2563eb;color:#fff}
+    .btn.ghost{background:#eef2ff;color:#1f2937}
+    .select,.input{padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;min-width:220px}
+    .cards2{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+    .cardx{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px}
+    .cardx h4{color:#374151;margin-bottom:8px}
+    .kpi{font-size:26px;font-weight:900;color:#2563eb}
+    .note{color:#6b7280;font-size:13px}
+    .panel{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px;margin-top:16px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .tab{padding:8px 12px;border-radius:999px;background:#f3f4f6;cursor:pointer;font-weight:700;color:#374151}
+    .tab.active{background:#2563eb;color:#fff}
+    @media(max-width:1000px){.cards2{grid-template-columns:1fr}.input,.select{min-width:160px}}
+  </style>
+  <script>
+    function showReport(id){
+      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+      document.querySelectorAll(".report").forEach(r=>r.style.display="none");
+      document.getElementById("tab-"+id).classList.add("active");
+      document.getElementById("report-"+id).style.display="block";
+    }
+    window.addEventListener("DOMContentLoaded", ()=>showReport("tram"));
+  </script>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>TNGO Bike</h2>
+  <ul>
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="tram-xe.html">Quản lý trạm xe</a></li>
+    <li><a href="xe-dap.html">Quản lý xe đạp</a></li>
+    <li><a href="khach-hang.html">Quản lý khách hàng</a></li>
+    <li><a href="chuyen-di.html">Quản lý chuyến đi</a></li>
+    <li><a href="hoa-don.html">Quản lý hoá đơn</a></li>
+    <li><a href="bao-cao.html">Báo cáo thống kê</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="header">
+    <h3>Báo cáo & Thống kê</h3>
+    <span class="note">Phục vụ điều phối xe & đánh giá hiệu quả hoạt động</span>
+  </div>
+
+  <div class="content">
+
+    <div class="toolbar">
+      <input class="input" placeholder="Từ ngày (dd/mm/yyyy)"/>
+      <input class="input" placeholder="Đến ngày (dd/mm/yyyy)"/>
+      <button class="btn primary">Lọc báo cáo</button>
+      <button class="btn ghost">Xuất PDF/Excel (mô phỏng)</button>
+    </div>
+
+    <div class="cards2">
+      <div class="cardx">
+        <h4>Tổng chuyến trong kỳ</h4>
+        <div class="kpi">1.256</div>
+        <div class="note">Tổng số chuyến hoàn tất</div>
+      </div>
+      <div class="cardx">
+        <h4>Doanh thu trong kỳ</h4>
+        <div class="kpi">86.400.000đ</div>
+        <div class="note">Tổng tiền cước đã thu</div>
+      </div>
+      <div class="cardx">
+        <h4>Tỉ lệ xe bảo trì</h4>
+        <div class="kpi">6.5%</div>
+        <div class="note">Số xe trạng thái “bảo trì”</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h4>Chọn loại báo cáo</h4>
+      <div class="tabs">
+        <div id="tab-tram" class="tab" onclick="showReport('tram')">Báo cáo trạm</div>
+        <div id="tab-xe" class="tab" onclick="showReport('xe')">Báo cáo xe</div>
+        <div id="tab-kh" class="tab" onclick="showReport('kh')">Báo cáo khách hàng</div>
+        <div id="tab-cd" class="tab" onclick="showReport('cd')">Báo cáo chuyến đi</div>
+        <div id="tab-hd" class="tab" onclick="showReport('hd')">Báo cáo hoá đơn</div>
+      </div>
+
+      <div id="report-tram" class="report" style="display:none;margin-top:12px;">
+        <table>
+          <tr><th>Mã trạm</th><th>Tên trạm</th><th>Sức chứa</th><th>Số xe đang đậu</th><th>Gợi ý điều phối</th></tr>
+          <tr><td>TR01</td><td>Cầu Giấy</td><td>30</td><td>4</td><td>+ điều xe về trạm</td></tr>
+          <tr><td>TR02</td><td>Dịch Vọng</td><td>25</td><td>18</td><td>- điều xe sang trạm khác</td></tr>
+        </table>
+      </div>
+
+      <div id="report-xe" class="report" style="display:none;margin-top:12px;">
+        <table>
+          <tr><th>Trạng thái</th><th>Số lượng</th><th>Tỉ lệ</th></tr>
+          <tr><td>đang đậu</td><td>92</td><td>76.7%</td></tr>
+          <tr><td>đang thuê</td><td>20</td><td>16.7%</td></tr>
+          <tr><td>bảo trì</td><td>8</td><td>6.6%</td></tr>
+        </table>
+      </div>
+
+      <div id="report-kh" class="report" style="display:none;margin-top:12px;">
+        <table>
+          <tr><th>Mã KH</th><th>Họ tên</th><th>Số chuyến</th><th>Tổng cước</th><th>Số dư ví</th></tr>
+          <tr><td>KH001</td><td>Nguyễn An</td><td>14</td><td>168.000đ</td><td>120.000đ</td></tr>
+          <tr><td>KH014</td><td>Trần Minh</td><td>6</td><td>72.000đ</td><td>35.000đ</td></tr>
+        </table>
+      </div>
+
+      <div id="report-cd" class="report" style="display:none;margin-top:12px;">
+        <table>
+          <tr><th>Mã chuyến</th><th>Mã KH</th><th>Mã xe</th><th>Thuê</th><th>Trả</th><th>Cước</th><th>Trạng thái</th></tr>
+          <tr><td>CD0998</td><td>KH014</td><td>XE001</td><td>18/12 09:12</td><td>18/12 09:45</td><td>12.000đ</td><td>hoàn tất</td></tr>
+          <tr><td>CD1001</td><td>KH001</td><td>XE014</td><td>19/12 14:05</td><td>-</td><td>-</td><td>đang chạy</td></tr>
+        </table>
+      </div>
+
+      <div id="report-hd" class="report" style="display:none;margin-top:12px;">
+        <table>
+          <tr><th>Mã HĐ</th><th>Mã KH</th><th>Loại</th><th>Số tiền</th><th>Thời gian</th><th>Trạng thái</th></tr>
+          <tr><td>HD2001</td><td>KH014</td><td>nạp tiền</td><td>+50.000đ</td><td>19/12 10:20</td><td>thành công</td></tr>
+          <tr><td>HD2002</td><td>KH001</td><td>trả cước</td><td>-12.000đ</td><td>18/12 09:45</td><td>thành công</td></tr>
+        </table>
+      </div>
+
+      <div class="note" style="margin-top:10px;">
+        * Báo cáo giúp quản trị viên đánh giá xu hướng mượn xe và ra quyết định điều phối giữa các trạm.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
