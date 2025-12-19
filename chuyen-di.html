@@ -2,131 +2,112 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quản lý chuyến đi</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
+
 <body>
-
-<aside class="sidebar">
-  <div class="brand">
-    <div class="brand-logo"><i class="fa-solid fa-bicycle"></i></div>
-    <div class="brand-text">
-      <div class="brand-name">TNGO Bike</div>
-      <div class="brand-sub">Admin Panel</div>
+<div class="container">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><i class="fa-solid fa-bicycle"></i></div>
+      <div class="title"><b>TNGO Bike</b><span>Admin Panel</span></div>
     </div>
-  </div>
+    <div class="nav-title">Navigation</div>
+    <ul class="nav">
+      <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+      <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
+      <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
+      <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
+      <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
+      <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
+      <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
+    </ul>
+  </aside>
 
-  <nav class="menu">
-    <div class="menu-title">Navigation</div>
-    <a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-    <a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i><span>Quản lý trạm xe</span></a>
-    <a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i><span>Quản lý xe đạp</span></a>
-    <a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i><span>Quản lý khách hàng</span></a>
-    <a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i><span>Quản lý chuyến đi</span></a>
-    <a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i><span>Quản lý hoá đơn</span></a>
-    <a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i><span>Báo cáo thống kê</span></a>
-  </nav>
-</aside>
-
-<main class="main">
-  <header class="topbar">
-    <div class="page-title">
-      <h3>Quản lý chuyến đi</h3>
-      <span class="muted">Một khách hàng tại 1 thời điểm chỉ có 1 chuyến đang chạy</span>
-    </div>
-
-    <div class="topbar-right">
-      <div class="search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input placeholder="Tìm nhanh..." />
-      </div>
-      <button class="icon-btn" title="Thông báo"><i class="fa-regular fa-bell"></i></button>
-      <div class="profile">
-        <img src="https://i.pravatar.cc/40?img=3" alt="avatar">
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-inner">
         <div>
-          <div class="profile-name">Admin</div>
-          <div class="profile-role">Quản trị viên</div>
+          <div class="breadcrumb">Quản lý / Chuyến đi</div>
+          <div class="page-title">Quản lý chuyến đi</div>
+        </div>
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
+          <input id="tripSearch" placeholder="Tìm theo mã chuyến / KH / XE..." />
+        </div>
+        <div class="profile">
+          <div class="avatar">AD</div>
+          <div class="who"><b>Admin</b><span>Quản trị viên</span></div>
         </div>
       </div>
     </div>
-  </header>
 
-  <section class="page">
-    <div class="panel">
-      <h4>Bộ lọc</h4>
-      <div class="toolbar">
-        <input class="input" placeholder="Tìm theo mã chuyến / mã KH / mã xe..." />
-        <select class="select">
-          <option value="">Lọc trạng thái</option>
-          <option>đang chạy</option>
-          <option>hoàn tất</option>
-        </select>
-        <button class="btn primary"><i class="fa-solid fa-plus"></i> Tạo chuyến (mô phỏng)</button>
-        <button class="btn ghost"><i class="fa-solid fa-file-export"></i> Xuất danh sách</button>
+    <div class="grid">
+      <div class="card">
+        <div class="card-h">
+          <b>Danh sách chuyến đi</b>
+          <div class="row">
+            <select class="select" id="tripStatusFilter">
+              <option value="">Lọc theo trạng thái</option>
+              <option>đang chạy</option>
+              <option>hoàn tất</option>
+            </select>
+            <button class="btn ghost" id="exportTrips"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Mã chuyến</th><th>Khách hàng</th><th>Mã xe</th><th>Trạm bắt đầu</th>
+                <th>Bắt đầu</th><th>Kết thúc</th><th>Phí</th><th>Trạng thái</th><th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="tripTbody"></tbody>
+          </table>
+          <div class="note">Kết thúc chuyến → tự tạo hoá đơn trả cước + trừ ví + trả xe về trạm.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><b>Tạo / Sửa chuyến đi</b></div>
+        <div class="card-b">
+          <div class="field">
+            <div class="label">Mã chuyến (để trống để tự sinh)</div>
+            <input class="input" id="tripId" placeholder="VD: CD120" />
+          </div>
+          <div class="field">
+            <div class="label">Mã KH</div>
+            <input class="input" id="tripCustomerId" placeholder="VD: KH014" />
+          </div>
+          <div class="field">
+            <div class="label">Mã xe</div>
+            <input class="input" id="tripBikeId" placeholder="VD: XE001" />
+          </div>
+          <div class="field">
+            <div class="label">Trạm bắt đầu</div>
+            <input class="input" id="tripStationId" placeholder="VD: TR01" />
+          </div>
+          <div class="field">
+            <div class="label">Thời gian bắt đầu</div>
+            <input class="input" id="tripStartTime" placeholder="Để trống sẽ lấy thời gian hiện tại" />
+          </div>
+          <div style="margin-top:10px">
+            <button class="btn primary" id="btnSaveTrip"><i class="fa-solid fa-plus"></i>Lưu chuyến (đang chạy)</button>
+          </div>
+        </div>
       </div>
     </div>
+  </main>
+</div>
 
-    <div class="panel">
-      <h4>Danh sách chuyến đi</h4>
-      <table>
-        <tr>
-          <th>Mã chuyến</th>
-          <th>Mã KH</th>
-          <th>Mã xe</th>
-          <th>Trạm thuê</th>
-          <th>Thời gian thuê</th>
-          <th>Trạm trả</th>
-          <th>Thời gian trả</th>
-          <th>Tổng cước</th>
-          <th>Trạng thái</th>
-          <th>Hành động</th>
-        </tr>
-        <tr>
-          <td>CD1001</td>
-          <td>KH001</td>
-          <td>XE014</td>
-          <td>TR02</td>
-          <td>19/12/2025 14:05</td>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
-          <td><span class="badge b-run">đang chạy</span></td>
-          <td><button class="btn ghost"><i class="fa-solid fa-flag-checkered"></i> Kết thúc</button></td>
-        </tr>
-        <tr>
-          <td>CD0998</td>
-          <td>KH014</td>
-          <td>XE001</td>
-          <td>TR01</td>
-          <td>18/12/2025 09:12</td>
-          <td>TR03</td>
-          <td>18/12/2025 09:45</td>
-          <td>12.000đ</td>
-          <td><span class="badge b-done">hoàn tất</span></td>
-          <td><button class="btn ghost"><i class="fa-solid fa-eye"></i> Xem</button></td>
-        </tr>
-      </table>
-
-      <span class="muted" style="display:block;margin-top:10px;">
-        * Khi kết thúc chuyến, hệ thống cập nhật thời gian trả, tính tiền cước và trừ ví + tạo hoá đơn trả cước.
-      </span>
-    </div>
-  </section>
-</main>
-
-<script>
-  const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".menu-item").forEach(a=>{
-    if(a.getAttribute("href") === path) a.classList.add("active");
-  });
-</script>
-  <script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js"></script>
 </body>
 </html>
