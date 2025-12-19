@@ -1,4 +1,81 @@
 (() => {
+  // =================== AUTH + ROLE (FE) ===================
+function getSession() {
+  const s = localStorage.getItem("TNGO_SESSION") || sessionStorage.getItem("TNGO_SESSION");
+  if (!s) return null;
+  try { return JSON.parse(s); } catch { return null; }
+}
+
+function requireAuth() {
+  const sess = getSession();
+  const onLoginPage = location.pathname.endsWith("dang-nhap.html") || location.pathname.endsWith("login.html");
+
+  if (!sess && !onLoginPage) {
+    location.href = "./dang-nhap.html";
+    return null;
+  }
+  if (sess && onLoginPage) {
+    location.href = "./index.html";
+    return sess;
+  }
+  return sess;
+}
+
+function logout() {
+  localStorage.removeItem("TNGO_SESSION");
+  sessionStorage.removeItem("TNGO_SESSION");
+  location.href = "./dang-nhap.html";
+}
+
+// Quy tắc phân quyền
+function canDelete(role) {
+  return role === "QUANTRIVIEN"; // NV trạm không được xóa
+}
+
+// Helper: chặn hành động xóa theo role
+function guardDelete(role) {
+  if (!canDelete(role)) {
+    alert("Nhân viên trạm không có quyền XÓA.");
+    return false;
+  }
+  return true;
+}
+
+// Helper: set UI topbar (avatar góc phải)
+function renderTopbar() {
+  const sess = getSession();
+  if (!sess) return;
+
+  // Bạn cần có các element này trong HTML:
+  // #topbarName, #topbarRole, #topbarAvatar, #btnLogout
+  const nameEl = document.getElementById("topbarName");
+  const roleEl = document.getElementById("topbarRole");
+  const avaEl  = document.getElementById("topbarAvatar");
+  const outBtn = document.getElementById("btnLogout");
+
+  if (nameEl) nameEl.textContent = sess.name || sess.username;
+  if (roleEl) roleEl.textContent = sess.role === "QUANTRIVIEN" ? "Quản trị viên" : "Nhân viên trạm";
+  if (avaEl)  avaEl.src = sess.avatar || "./assets/img/admin.png";
+  if (outBtn) outBtn.addEventListener("click", logout);
+}
+
+// chạy ngay khi load
+(function bootAuth(){
+  const sess = requireAuth();
+  if (!sess) return;
+  renderTopbar();
+
+  // Ẩn tất cả nút xóa nếu không có quyền
+  if (!canDelete(sess.role)) {
+    document.querySelectorAll("[data-action='delete']").forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+      btn.style.pointerEvents = "none";
+      btn.title = "Nhân viên trạm không có quyền xóa";
+    });
+  }
+})();
+
   // ========= Helpers =========
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
