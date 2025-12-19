@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập - TNGO Bike</title>
+
+  <!-- Font + Icon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --glass: rgba(20, 24, 33, .55);
+      --glass2: rgba(20, 24, 33, .28);
+      --line: rgba(255,255,255,.18);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --primary:#2563eb;
+      --danger:#ef4444;
+      --ok:#22c55e;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:
+        linear-gradient(135deg, rgba(7,11,20,.85), rgba(7,11,20,.55)),
+        url("./assets/img/login-bg.jpg") center/cover no-repeat fixed;
+      color:var(--text);
+    }
+    .wrap{
+      width:min(1080px, 92vw);
+      min-height:520px;
+      border-radius:18px;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      border:1px solid var(--line);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      backdrop-filter: blur(12px);
+    }
+    .left{
+      padding:44px;
+      background: linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.05));
+      position:relative;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800; letter-spacing:.3px;
+    }
+    .brand i{font-size:22px; color:#9cc3ff}
+    .tag{
+      margin-top:22px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .hero{
+      margin-top:40px;
+      max-width:520px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:44px;
+      line-height:1.08;
+      letter-spacing:-.6px;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:520px;
+    }
+    .social{
+      position:absolute; left:44px; bottom:38px;
+      display:flex; gap:10px;
+      opacity:.9;
+    }
+    .social a{
+      width:34px;height:34px;border-radius:10px;
+      display:grid; place-items:center;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      text-decoration:none;
+    }
+
+    .right{
+      padding:44px;
+      background: linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+      border-left:1px solid var(--line);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:14px;
+    }
+    .right h2{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.3px;
+    }
+    .hint{
+      margin-top:-6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .field{
+      margin-top:10px;
+    }
+    .label{
+      font-size:12px; color:var(--muted);
+      margin-bottom:6px;
+      display:flex; justify-content:space-between; gap:10px;
+    }
+    .control{
+      position:relative;
+    }
+    .control i{
+      position:absolute; left:12px; top:50%;
+      transform:translateY(-50%);
+      color:rgba(255,255,255,.65);
+      font-size:14px;
+    }
+    input, select{
+      width:100%;
+      padding:12px 12px 12px 36px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+    }
+    input::placeholder{color:rgba(255,255,255,.45)}
+    .row{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .row a{color:#b8d2ff; text-decoration:none}
+    .btn{
+      margin-top:12px;
+      width:100%;
+      border:none;
+      border-radius:12px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      background:linear-gradient(135deg, #2f6bff, #2563eb);
+      color:white;
+      box-shadow: 0 10px 24px rgba(37,99,235,.35);
+    }
+    .btn:active{transform:translateY(1px)}
+    .toast{
+      display:none;
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .toast.show{display:block}
+    .toast.ok{color:#d6ffe5}
+    .toast.bad{color:#ffd4d4}
+    .footer{
+      margin-top:8px;
+      font-size:12px;
+      color:rgba(255,255,255,.55);
+      text-align:center;
+    }
+    @media (max-width: 900px){
+      .wrap{grid-template-columns:1fr}
+      .left{display:none}
+      .right{border-left:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="left">
+      <div class="brand">
+        <i class="fa-solid fa-bicycle"></i>
+        <div>TNGO Bike</div>
+      </div>
+      <div class="tag">
+        <i class="fa-solid fa-shield-halved"></i>
+        Đăng nhập theo phân quyền (Admin / Nhân viên trạm)
+      </div>
+
+      <div class="hero">
+        <h1>Quản lý xe đạp công cộng</h1>
+        <p>
+          Giao diện Admin Panel mô phỏng “web thật”: lưu phiên đăng nhập,
+          thao tác CRUD + xuất dữ liệu (FE) và chặn quyền xóa với nhân viên trạm.
+        </p>
+      </div>
+
+      <div class="social">
+        <a href="#" aria-label="fb"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="gg"><i class="fa-brands fa-google"></i></a>
+        <a href="#" aria-label="gh"><i class="fa-brands fa-github"></i></a>
+      </div>
+    </section>
+
+    <section class="right">
+      <h2>Đăng nhập</h2>
+      <div class="hint">
+        Demo tài khoản:
+        <br>• ADMIN01 / Admin@123 (Quản trị viên)
+        <br>• NVTR01 / Nvtr@123 (Nhân viên trạm - không được xóa)
+      </div>
+
+      <div class="field">
+        <div class="label">Tài khoản</div>
+        <div class="control">
+          <i class="fa-solid fa-user"></i>
+          <input id="username" placeholder="VD: ADMIN01 hoặc NVTR01" autocomplete="username">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          <span>Mật khẩu</span>
+          <a href="#" onclick="event.preventDefault();alert('Demo thôi 😄');">Quên mật khẩu?</a>
+        </div>
+        <div class="control">
+          <i class="fa-solid fa-lock"></i>
+          <input id="password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password">
+        </div>
+      </div>
+
+      <div class="row">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input id="remember" type="checkbox" style="width:auto;padding:0;margin:0">
+          Ghi nhớ đăng nhập
+        </label>
+        <span style="opacity:.75"><i class="fa-solid fa-location-dot"></i> TNGO Panel</span>
+      </div>
+
+      <button class="btn" id="btnLogin">
+        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+      </button>
+
+      <div class="toast" id="toast"></div>
+      <div class="footer">© TNGO Bike - FE Admin Panel</div>
+    </section>
+  </div>
+
+  <script>
+    // ====== Demo user DB (FE) ======
+    const USERS = [
+      { username: "ADMIN01", password: "Admin@123", role: "QUANTRIVIEN", name: "Admin", avatar: "./assets/img/admin.png" },
+      { username: "NVTR01",  password: "Nvtr@123",  role: "NHANVIENTRAM", name: "Nhân viên trạm", avatar: "./assets/img/staff.png" }
+    ];
+
+    function toast(msg, type=""){
+      const el = document.getElementById("toast");
+      el.className = "toast show " + type;
+      el.textContent = msg;
+    }
+
+    function setSession(u, remember){
+      const session = {
+        username: u.username,
+        role: u.role,
+        name: u.name,
+        avatar: u.avatar || "./assets/img/admin.png",
+        loginAt: Date.now()
+      };
+      // nhớ đăng nhập: localStorage, không nhớ: sessionStorage
+      const store = remember ? localStorage : sessionStorage;
+      store.setItem("TNGO_SESSION", JSON.stringify(session));
+      // cũng lưu 1 bản ở localStorage để script.js đọc thống nhất (nếu bạn muốn)
+      localStorage.setItem("TNGO_SESSION", JSON.stringify(session));
+    }
+
+    function alreadyLogin(){
+      const s = localStorage.getItem("TNGO_SESSION") || sessionStorage.getItem("TNGO_SESSION");
+      if(!s) return false;
+      try {
+        const obj = JSON.parse(s);
+        return !!obj?.username;
+      } catch { return false; }
+    }
+
+    if(alreadyLogin()){
+      // đã login thì đá về dashboard
+      location.href = "./index.html";
+    }
+
+    document.getElementById("btnLogin").addEventListener("click", () => {
+      const username = (document.getElementById("username").value || "").trim();
+      const password = document.getElementById("password").value || "";
+      const remember = document.getElementById("remember").checked;
+
+      const u = USERS.find(x => x.username === username && x.password === password);
+      if(!u){
+        toast("Sai tài khoản hoặc mật khẩu.", "bad");
+        return;
+      }
+      setSession(u, remember);
+      toast("Đăng nhập thành công! Đang chuyển trang...", "ok");
+      setTimeout(() => location.href = "./index.html", 650);
+    });
+
+    // Enter để login
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") document.getElementById("btnLogin").click();
+    });
+  </script>
+</body>
+</html>
