@@ -105,3 +105,72 @@ td {
   background: #eef2ff;
   color: #1e3a8a;
 }
+/* ===== PATCH FIX SIDEBAR + TYPO (paste at END) ===== */
+html, body { height: 100%; }
+body { margin: 0; font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#f5f7fb; color:#374151; }
+
+/* Sidebar layout */
+.sidebar{
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 260px;
+  padding: 18px 14px;
+  background: linear-gradient(180deg,#0f172a,#111827);
+  overflow-y: auto;
+}
+
+.sidebar .brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding: 10px 10px 18px;
+  color:#fff;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.sidebar .brand i{ font-size: 18px; }
+.sidebar .brand .brand-name{ font-size: 18px; }
+
+/* Remove default list / link styles */
+.sidebar ul{ list-style:none; padding:0; margin: 10px 0 0; }
+.sidebar li{ margin: 6px 0; }
+
+.sidebar a,
+.sidebar a:visited{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration:none;
+  color:#c7d2fe;           /* FIX màu tím */
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar a:hover{ background: rgba(37,99,235,.18); color:#fff; }
+.sidebar a.active{ background:#2563eb; color:#fff; }
+
+/* normalize icons size */
+.sidebar a i{
+  width: 18px;
+  text-align:center;
+  font-size: 15px;
+  opacity: .95;
+}
+
+/* Main content should not hide under sidebar */
+main, .main, .content{
+  margin-left: 260px;
+  padding: 22px 22px 30px;
+}
+
+/* Make tables/buttons look modern even if old css thiếu */
+table{ width:100%; border-collapse: collapse; background:#fff; border-radius:12px; overflow:hidden; }
+th{ background:#f1f5f9; padding:12px; text-align:left; font-weight:800; }
+td{ padding:12px; border-bottom:1px solid #e5e7eb; }
+.btn{ border:0; border-radius:10px; padding:8px 12px; font-weight:700; cursor:pointer; }
+.btn.primary{ background:#2563eb; color:#fff; }
+.btn.ghost{ background:#eef2ff; color:#1e3a8a; }
+
