@@ -98,4 +98,66 @@
           </tr>
           <tr>
             <td>XE014</td>
-            <td><span class="badge b-warn">đang thuê</spa
+            <td><span class="badge b-warn">đang thuê</span></td>
+            <td>TR02 - Dịch Vọng</td>
+            <td><button class="btn ghost"><i class="fa-solid fa-eye"></i> Xem chuyến</button></td>
+          </tr>
+          <tr>
+            <td>XE078</td>
+            <td><span class="badge b-bad">bảo trì</span></td>
+            <td>TR03 - Trần Duy Hưng</td>
+            <td><button class="btn ghost"><i class="fa-solid fa-pen"></i> Cập nhật</button></td>
+          </tr>
+        </table>
+        <span class="muted" style="display:block;margin-top:10px;">
+          * Xe “đang thuê” gắn với 1 chuyến đi đang chạy. Xe “đang đậu” thuộc 1 trạm.
+        </span>
+      </div>
+
+      <div class="panel">
+        <h4>Form cập nhật nhanh</h4>
+
+        <div class="formrow">
+          <div class="muted">Mã xe</div>
+          <input class="input" value="XE001" />
+        </div>
+
+        <div class="formrow">
+          <div class="muted">Trạng thái</div>
+          <select class="select">
+            <option>đang đậu</option>
+            <option>đang thuê</option>
+            <option>bảo trì</option>
+          </select>
+        </div>
+
+        <div class="formrow">
+          <div class="muted">Trạm</div>
+          <select class="select">
+            <option>TR01 - Cầu Giấy</option>
+            <option>TR02 - Dịch Vọng</option>
+            <option>TR03 - Trần Duy Hưng</option>
+          </select>
+        </div>
+
+        <button class="btn primary" style="width:100%;margin-top:10px;">
+          <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+        </button>
+
+        <span class="muted" style="display:block;margin-top:10px;">
+          * Nếu trạng thái = “đang thuê” thì trạm sẽ không còn là nơi đậu.
+        </span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const path = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".menu-item").forEach(a=>{
+    if(a.getAttribute("href") === path) a.classList.add("active");
+  });
+</script>
+  <script src="./assets/js/script.js"></script>
+</body>
+</html>
