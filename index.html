@@ -2,79 +2,99 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard - TNGO</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
+
 <body>
-
-<aside class="sidebar">
-  <div class="brand">
-    <div class="brand-logo"><i class="fa-solid fa-bicycle"></i></div>
-    <div class="brand-text">
-      <div class="brand-name">TNGO Bike</div>
-      <div class="brand-sub">Admin Panel</div>
-    </div>
-  </div>
-
-  <nav class="menu">
-    <div class="menu-title">Navigation</div>
-    <a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-    <a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i><span>Quản lý trạm xe</span></a>
-    <a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i><span>Quản lý xe đạp</span></a>
-    <a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i><span>Quản lý khách hàng</span></a>
-    <a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i><span>Quản lý chuyến đi</span></a>
-    <a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i><span>Quản lý hoá đơn</span></a>
-    <a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i><span>Báo cáo thống kê</span></a>
-  </nav>
-</aside>
-
-<main class="main">
-  <header class="topbar">
-    <div class="page-title">
-      <h3>Dashboard hệ thống xe đạp công cộng</h3>
-      <span class="muted">Xin chào, Admin</span>
-    </div>
-
-    <div class="topbar-right">
-      <div class="search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input placeholder="Tìm nhanh..." />
+<div class="container">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><i class="fa-solid fa-bicycle"></i></div>
+      <div class="title">
+        <b>TNGO Bike</b>
+        <span>Admin Panel</span>
       </div>
-      <button class="icon-btn" title="Thông báo"><i class="fa-regular fa-bell"></i></button>
-      <button class="icon-btn" title="Tin nhắn"><i class="fa-regular fa-comment-dots"></i></button>
-      <div class="profile">
-        <img src="https://i.pravatar.cc/40?img=3" alt="avatar">
+    </div>
+
+    <div class="nav-title">Navigation</div>
+    <ul class="nav">
+      <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+      <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
+      <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
+      <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
+      <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
+      <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
+      <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
+    </ul>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-inner">
         <div>
-          <div class="profile-name">Admin</div>
-          <div class="profile-role">Quản trị viên</div>
+          <div class="breadcrumb">Trang chủ / Dashboard</div>
+          <div class="page-title">Dashboard</div>
+        </div>
+
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
+          <input placeholder="Tìm nhanh..." />
+        </div>
+
+        <div class="profile">
+          <div class="avatar">AD</div>
+          <div class="who">
+            <b>Admin</b>
+            <span>Quản trị viên</span>
+          </div>
         </div>
       </div>
     </div>
-  </header>
 
-  <section class="page">
-    <div class="cards">
-      <div class="card"><h4>Tổng số trạm</h4><span>8</span></div>
-      <div class="card"><h4>Tổng số xe</h4><span>120</span></div>
-      <div class="card"><h4>Chuyến đi hôm nay</h4><span>45</span></div>
-      <div class="card"><h4>Doanh thu hôm nay</h4><span>2.500.000đ</span></div>
+    <div class="kpis">
+      <div class="kpi">
+        <div class="label">Số trạm</div>
+        <div class="value" id="kpiStations">0</div>
+        <div class="hint">Tổng trạm đang quản lý</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Số xe</div>
+        <div class="value" id="kpiBikes">0</div>
+        <div class="hint">Tổng xe trong hệ thống</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Doanh thu (tổng)</div>
+        <div class="value" id="kpiRevenue">0đ</div>
+        <div class="hint">Tổng phát sinh từ hoá đơn</div>
+      </div>
     </div>
-  </section>
-</main>
 
-<script>
-  const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".menu-item").forEach(a=>{
-    if(a.getAttribute("href") === path) a.classList.add("active");
-  });
-</script>
-  <script src="./assets/js/script.js"></script>
+    <div class="card">
+      <div class="card-h">
+        <b>Thao tác nhanh</b>
+        <button class="btn danger" id="btnResetAll"><i class="fa-solid fa-rotate"></i>Reset dữ liệu demo</button>
+      </div>
+      <div class="card-b">
+        <div class="row">
+          <a class="btn primary" href="khach-hang.html"><i class="fa-solid fa-wallet"></i>Nạp tiền cho KH</a>
+          <a class="btn ghost" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Tạo/Kết thúc chuyến</a>
+          <a class="btn ghost" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Xem hoá đơn</a>
+          <a class="btn ghost" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Xem báo cáo</a>
+        </div>
+        <div class="note">FE chạy thật bằng LocalStorage: thêm/sửa/xoá/xuất dữ liệu & mô phỏng nạp tiền/trả cước.</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="./assets/js/script.js"></script>
 </body>
 </html>
