@@ -1,80 +1,133 @@
 (() => {
   // =================== AUTH + ROLE (FE) ===================
-function getSession() {
-  const s = localStorage.getItem("TNGO_SESSION") || sessionStorage.getItem("TNGO_SESSION");
-  if (!s) return null;
-  try { return JSON.parse(s); } catch { return null; }
-}
+  const SESSION_KEY = "TNGO_SESSION";
 
-function requireAuth() {
-  const sess = getSession();
-  const onLoginPage = location.pathname.endsWith("dang-nhap.html") || location.pathname.endsWith("login.html");
+  // Demo users (FE)
+  // QUANTRIVIEN: toàn quyền
+  // NHANVIENTRAM: không được xoá
+  const DEMO_USERS = [
+    { username: "ADMIN01", password: "Admin@123", role: "QUANTRIVIEN", name: "Admin", avatar: "./assets/img/admin.png" },
+    { username: "NVTR01",  password: "Nvtr@123",  role: "NHANVIENTRAM", name: "NV Trạm", avatar: "./assets/img/staff.png" },
+  ];
 
-  if (!sess && !onLoginPage) {
-    location.href = "./dang-nhap.html";
-    return null;
+  function getSession() {
+    const s = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+    if (!s) return null;
+    try { return JSON.parse(s); } catch { return null; }
   }
-  if (sess && onLoginPage) {
-    location.href = "./index.html";
+
+  function setSession(sess, remember) {
+    const str = JSON.stringify(sess);
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    if (remember) localStorage.setItem(SESSION_KEY, str);
+    else sessionStorage.setItem(SESSION_KEY, str);
+  }
+
+  // ✅ HÀM TRANG LOGIN CẦN
+  function handleLogin(username, password, remember = true) {
+    const u = String(username || "").trim().toUpperCase();
+    const p = String(password || "").trim();
+
+    const found = DEMO_USERS.find(x => x.username === u && x.password === p);
+    if (!found) return { ok: false, msg: "Sai tài khoản hoặc mật khẩu." };
+
+    const sess = {
+      username: found.username,
+      role: found.role,
+      name: found.name,
+      avatar: found.avatar,
+      loginAt: Date.now()
+    };
+    setSession(sess, remember);
+    return { ok: true, msg: "Đăng nhập thành công! Đang chuyển trang..." };
+  }
+
+  function requireAuth() {
+    const sess = getSession();
+    const file = (location.pathname.split("/").pop() || "").toLowerCase();
+    const onLoginPage = file === "dang-nhap.html" || file === "login.html" || file === "";
+
+    if (!sess && !onLoginPage) {
+      location.href = "./dang-nhap.html";
+      return null;
+    }
+    if (sess && onLoginPage) {
+      location.href = "./index.html";
+      return sess;
+    }
     return sess;
   }
-  return sess;
-}
 
-function logout() {
-  localStorage.removeItem("TNGO_SESSION");
-  sessionStorage.removeItem("TNGO_SESSION");
-  location.href = "./dang-nhap.html";
-}
-
-// Quy tắc phân quyền
-function canDelete(role) {
-  return role === "QUANTRIVIEN"; // NV trạm không được xóa
-}
-
-// Helper: chặn hành động xóa theo role
-function guardDelete(role) {
-  if (!canDelete(role)) {
-    alert("Nhân viên trạm không có quyền XÓA.");
-    return false;
+  function logout() {
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    location.href = "./dang-nhap.html";
   }
-  return true;
-}
 
-// Helper: set UI topbar (avatar góc phải)
-function renderTopbar() {
-  const sess = getSession();
-  if (!sess) return;
+  // Quy tắc phân quyền
+  function canDelete(role) {
+    return role === "QUANTRIVIEN";
+  }
 
-  // Bạn cần có các element này trong HTML:
-  // #topbarName, #topbarRole, #topbarAvatar, #btnLogout
-  const nameEl = document.getElementById("topbarName");
-  const roleEl = document.getElementById("topbarRole");
-  const avaEl  = document.getElementById("topbarAvatar");
-  const outBtn = document.getElementById("btnLogout");
+  function guardDelete(role) {
+    if (!canDelete(role)) {
+      alert("Nhân viên trạm không có quyền XÓA.");
+      return false;
+    }
+    return true;
+  }
 
-  if (nameEl) nameEl.textContent = sess.name || sess.username;
-  if (roleEl) roleEl.textContent = sess.role === "QUANTRIVIEN" ? "Quản trị viên" : "Nhân viên trạm";
-  if (avaEl)  avaEl.src = sess.avatar || "./assets/img/admin.png";
-  if (outBtn) outBtn.addEventListener("click", logout);
-}
+  function roleLabel(role) {
+    return role === "QUANTRIVIEN" ? "Quản trị viên" : "Nhân viên trạm";
+  }
 
-// chạy ngay khi load
-(function bootAuth(){
-  const sess = requireAuth();
-  if (!sess) return;
-  renderTopbar();
+  // set UI topbar (avatar góc phải)
+  function renderTopbar() {
+    const sess = getSession();
+    if (!sess) return;
 
-  // Ẩn tất cả nút xóa nếu không có quyền
-  if (!canDelete(sess.role)) {
-    document.querySelectorAll("[data-action='delete']").forEach(btn => {
+    const nameEl = document.getElementById("topbarName");
+    const roleEl = document.getElementById("topbarRole");
+    const avaEl  = document.getElementById("topbarAvatar");
+    const outBtn = document.getElementById("btnLogout");
+
+    if (nameEl) nameEl.textContent = sess.name || sess.username;
+    if (roleEl) roleEl.textContent = roleLabel(sess.role);
+    if (avaEl)  avaEl.src = sess.avatar || "./assets/img/admin.png";
+    if (outBtn) outBtn.addEventListener("click", logout);
+  }
+
+  function lockDeleteButtonsIfNeeded() {
+    const sess = getSession();
+    if (!sess) return;
+    if (canDelete(sess.role)) return;
+
+    // ✅ khoá đúng các nút xoá đang dùng trong HTML của bạn
+    const selectors = [
+      "[data-del-station]",
+      "[data-del-bike]",
+      "[data-del-customer]",
+      "[data-del-trip]",
+      "[data-del-invoice]",
+      "[data-action='delete']"
+    ].join(",");
+
+    document.querySelectorAll(selectors).forEach(btn => {
       btn.disabled = true;
       btn.style.opacity = "0.5";
       btn.style.pointerEvents = "none";
       btn.title = "Nhân viên trạm không có quyền xóa";
     });
   }
-})();
+
+  (function bootAuth(){
+    const sess = requireAuth();
+    if (!sess) return;
+    renderTopbar();
+    // delay nhẹ để chắc DOM render xong rồi mới khoá nút xoá
+    window.addEventListener("DOMContentLoaded", lockDeleteButtonsIfNeeded);
+  })();
 
   // ========= Helpers =========
   const $ = (s, root=document) => root.querySelector(s);
@@ -220,7 +273,6 @@ function renderTopbar() {
       `;
     }).join("");
 
-    // fill select station filter if empty
     const sel = $("#bikeStationFilter");
     if(sel && sel.dataset.filled !== "1"){
       sel.innerHTML = `<option value="">Lọc theo trạm</option>` +
@@ -389,7 +441,6 @@ function renderTopbar() {
 
   // ========= Actions =========
   function bindActions(){
-    // Search inputs
     $("#stationSearch")?.addEventListener("input", renderStations);
     $("#bikeSearch")?.addEventListener("input", renderBikes);
     $("#bikeStatusFilter")?.addEventListener("change", renderBikes);
@@ -401,14 +452,12 @@ function renderTopbar() {
     $("#invoiceSearch")?.addEventListener("input", renderInvoices);
     $("#invoiceTypeFilter")?.addEventListener("change", renderInvoices);
 
-    // Export buttons
     $("#exportStations")?.addEventListener("click", ()=> exportCSV("tram-xe.csv", getDB().stations));
     $("#exportBikes")?.addEventListener("click", ()=> exportCSV("xe-dap.csv", getDB().bikes));
     $("#exportCustomers")?.addEventListener("click", ()=> exportCSV("khach-hang.csv", getDB().customers));
     $("#exportTrips")?.addEventListener("click", ()=> exportCSV("chuyen-di.csv", getDB().trips));
     $("#exportInvoices")?.addEventListener("click", ()=> exportCSV("hoa-don.csv", getDB().invoices));
 
-    // Add/Save forms
     $("#btnAddStation")?.addEventListener("click", ()=>{
       const db = getDB();
       const id = ($("#stationId").value.trim() || nextId("TR", db.stations));
@@ -420,6 +469,7 @@ function renderTopbar() {
       db.stations.push({id,name,address,capacity});
       saveDB(db);
       renderStations(); renderBikes(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã thêm trạm!");
     });
 
@@ -438,6 +488,7 @@ function renderTopbar() {
       }
       saveDB(db);
       renderBikes(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã lưu xe!");
     });
 
@@ -453,10 +504,10 @@ function renderTopbar() {
       db.customers.push({id,name,gender,phone,wallet});
       saveDB(db);
       renderCustomers(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã thêm khách hàng!");
     });
 
-    // Nạp tiền (tạo hoá đơn + cộng ví)
     $("#btnTopup")?.addEventListener("click", ()=>{
       const db = getDB();
       const customerId = $("#topupCustomerId").value.trim();
@@ -472,12 +523,13 @@ function renderTopbar() {
       saveDB(db);
 
       renderCustomers(); renderInvoices(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã tạo hoá đơn nạp tiền!");
     });
 
-    // Delegation: edit/delete buttons
     document.addEventListener("click", (e)=>{
       const db = getDB();
+      const sess = getSession();
 
       // Stations
       const es = e.target.closest("[data-edit-station]")?.dataset.editStation;
@@ -492,11 +544,12 @@ function renderTopbar() {
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(ds){
+        if (!guardDelete(sess?.role)) return;
         if(!confirm("Xoá trạm " + ds + " ?")) return;
         db.stations = db.stations.filter(x=>x.id!==ds);
-        // bikes referencing station -> keep but station name will be missing (demo)
         saveDB(db);
         renderStations(); renderBikes(); renderReports();
+        lockDeleteButtonsIfNeeded();
       }
 
       // Bikes
@@ -511,10 +564,12 @@ function renderTopbar() {
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(dbk){
+        if (!guardDelete(sess?.role)) return;
         if(!confirm("Xoá xe " + dbk + " ?")) return;
         db.bikes = db.bikes.filter(x=>x.id!==dbk);
         saveDB(db);
         renderBikes(); renderReports();
+        lockDeleteButtonsIfNeeded();
       }
 
       // Customers
@@ -531,10 +586,12 @@ function renderTopbar() {
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(dc){
+        if (!guardDelete(sess?.role)) return;
         if(!confirm("Xoá khách hàng " + dc + " ?")) return;
         db.customers = db.customers.filter(x=>x.id!==dc);
         saveDB(db);
         renderCustomers(); renderReports();
+        lockDeleteButtonsIfNeeded();
       }
 
       // Trips
@@ -545,20 +602,17 @@ function renderTopbar() {
       if(endTrip){
         const t = db.trips.find(x=>x.id===endTrip);
         if(!t) return;
-        // simple fee calc: 12k fixed demo
         const fee = 12000;
         t.endTime = nowStr();
         t.fee = fee;
         t.status = "hoàn tất";
 
-        // wallet minus + invoice
         const c = db.customers.find(x=>x.id===t.customerId);
         if(c) c.wallet -= fee;
 
         const invId = nextId("HD", db.invoices);
         db.invoices.push({ id:invId, customerId:t.customerId, type:"trả cước", amount:-fee, time:t.endTime, status:"thành công", ref:t.id });
 
-        // bike set to parked at TR01 by default (demo)
         const bike = db.bikes.find(x=>x.id===t.bikeId);
         if(bike){
           bike.status = "đang đậu";
@@ -567,6 +621,7 @@ function renderTopbar() {
 
         saveDB(db);
         renderTrips(); renderCustomers(); renderInvoices(); renderBikes(); renderReports();
+        lockDeleteButtonsIfNeeded();
         alert("Đã kết thúc chuyến + tạo hoá đơn trả cước!");
       }
 
@@ -582,10 +637,12 @@ function renderTopbar() {
       }
 
       if(delTrip){
+        if (!guardDelete(sess?.role)) return;
         if(!confirm("Xoá chuyến " + delTrip + " ?")) return;
         db.trips = db.trips.filter(x=>x.id!==delTrip);
         saveDB(db);
         renderTrips(); renderReports();
+        lockDeleteButtonsIfNeeded();
       }
 
       // Invoices
@@ -602,14 +659,15 @@ function renderTopbar() {
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(delInv){
+        if (!guardDelete(sess?.role)) return;
         if(!confirm("Xoá hoá đơn " + delInv + " ?")) return;
         db.invoices = db.invoices.filter(x=>x.id!==delInv);
         saveDB(db);
         renderInvoices(); renderReports();
+        lockDeleteButtonsIfNeeded();
       }
     });
 
-    // Save trip / invoice manual
     $("#btnSaveTrip")?.addEventListener("click", ()=>{
       const db = getDB();
       const id = ($("#tripId").value.trim() || nextId("CD", db.trips));
@@ -627,12 +685,12 @@ function renderTopbar() {
         exist.startTime = startTime;
       }else{
         db.trips.push({id, customerId, bikeId, startStationId, startTime, endTime:"", fee:0, status:"đang chạy"});
-        // set bike to renting
         const b = db.bikes.find(x=>x.id===bikeId);
         if(b) b.status = "đang thuê";
       }
       saveDB(db);
       renderTrips(); renderBikes(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã lưu chuyến!");
     });
 
@@ -655,22 +713,23 @@ function renderTopbar() {
       }
       saveDB(db);
       renderInvoices(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã lưu hoá đơn!");
     });
 
-    // Reset demo
     $("#btnResetAll")?.addEventListener("click", ()=>{
       if(!confirm("Reset toàn bộ dữ liệu demo?")) return;
       localStorage.removeItem(dbKey);
       getDB();
       renderStations(); renderBikes(); renderCustomers(); renderTrips(); renderInvoices(); renderReports();
+      lockDeleteButtonsIfNeeded();
       alert("Đã reset dữ liệu!");
     });
   }
 
   function boot(){
     setActiveMenu();
-    getDB(); // ensure exists
+    getDB();
 
     renderStations();
     renderBikes();
@@ -680,7 +739,12 @@ function renderTopbar() {
     renderReports();
 
     bindActions();
+    lockDeleteButtonsIfNeeded();
   }
 
   window.addEventListener("DOMContentLoaded", boot);
+
+  // expose for login page
+  window.handleLogin = handleLogin;
+  window.logout = logout;
 })();
