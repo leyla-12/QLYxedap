@@ -2,117 +2,64 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quản lý khách hàng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="./assets/css/style.css" />
-  <style>
-    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
-    .btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
-    .btn.primary{background:#2563eb;color:#fff}
-    .btn.ghost{background:#eef2ff;color:#1f2937}
-    .input, .select{padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;min-width:220px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-    .panel{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px}
-    .panel h4{margin-bottom:10px;color:#374151}
-    .formrow{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin:10px 0}
-    .note{color:#6b7280;font-size:13px}
-    .money{font-weight:800;color:#16a34a}
-    @media (max-width: 980px){.grid2{grid-template-columns:1fr}.input,.select{min-width:160px}}
-  </style>
+  <title>Quản lý khách hàng</title>
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>TNGO Bike</h2>
-  <ul>
-    <li><a href="index.html">Dashboard</a></li>
-    <li><a href="tram-xe.html">Quản lý trạm xe</a></li>
-    <li><a href="xe-dap.html">Quản lý xe đạp</a></li>
-    <li><a href="khach-hang.html">Quản lý khách hàng</a></li>
-    <li><a href="chuyen-di.html">Quản lý chuyến đi</a></li>
-    <li><a href="hoa-don.html">Quản lý hoá đơn</a></li>
-    <li><a href="bao-cao.html">Báo cáo thống kê</a></li>
-  </ul>
-</div>
+<!-- sidebar giống index.html -->
+<!-- copy y nguyên sidebar ở trên -->
 
-<div class="main">
-  <div class="header">
-    <h3>Quản lý khách hàng</h3>
-    <span class="note">Quản lý thông tin + số dư ví</span>
-  </div>
+<main class="main">
+  <header class="topbar">
+    <div class="page-title">
+      <h3>Quản lý khách hàng</h3>
+      <span class="muted">Thông tin khách hàng & số dư ví</span>
+    </div>
+  </header>
 
-  <div class="content">
-    <div class="toolbar">
-      <input class="input" placeholder="Tìm theo mã KH / SĐT..." />
-      <select class="select">
-        <option value="">Lọc theo giới tính</option>
-        <option>Nam</option>
-        <option>Nữ</option>
-        <option>Khác</option>
-      </select>
-      <button class="btn primary">+ Thêm khách hàng</button>
-      <button class="btn ghost">Xuất danh sách</button>
+  <section class="page">
+    <div class="panel">
+      <h4>Danh sách khách hàng</h4>
+      <table>
+        <tr>
+          <th>Mã KH</th><th>Họ tên</th><th>Giới tính</th><th>SĐT</th><th>Số dư</th><th>Hành động</th>
+        </tr>
+        <tr>
+          <td>KH001</td><td>Nguyễn An</td><td>Nữ</td><td>0987xxxx</td>
+          <td><b style="color:#16a34a">120.000đ</b></td>
+          <td><button class="btn ghost">Cập nhật</button></td>
+        </tr>
+      </table>
     </div>
 
-    <div class="grid2">
-      <div class="panel">
-        <h4>Danh sách khách hàng</h4>
-        <table>
-          <tr>
-            <th>Mã KH</th>
-            <th>Họ tên</th>
-            <th>Giới tính</th>
-            <th>SĐT</th>
-            <th>Số dư ví</th>
-            <th>Hành động</th>
-          </tr>
-          <tr>
-            <td>KH001</td>
-            <td>Nguyễn An</td>
-            <td>Nữ</td>
-            <td>0987xxxxxx</td>
-            <td class="money">120.000đ</td>
-            <td><button class="btn ghost">Cập nhật</button></td>
-          </tr>
-          <tr>
-            <td>KH014</td>
-            <td>Trần Minh</td>
-            <td>Nam</td>
-            <td>0909xxxxxx</td>
-            <td class="money">35.000đ</td>
-            <td><button class="btn ghost">Nạp tiền</button></td>
-          </tr>
-        </table>
-        <div class="note" style="margin-top:10px;">
-          * Hệ thống cấp Mã KH duy nhất. Ví dùng để trừ cước khi hoàn tất chuyến.
-        </div>
-      </div>
-
-      <div class="panel">
-        <h4>Nạp tiền vào ví (mô phỏng)</h4>
-        <div class="formrow">
-          <div class="note">Mã KH</div>
-          <input class="input" value="KH014"/>
-        </div>
-        <div class="formrow">
-          <div class="note">Số tiền nạp</div>
-          <input class="input" placeholder="VD: 50000"/>
-        </div>
-        <div class="formrow">
-          <div class="note">Trạng thái</div>
-          <select class="select">
-            <option>thành công</option>
-            <option>lỗi</option>
-          </select>
-        </div>
-        <button class="btn primary" style="width:100%;margin-top:10px;">Tạo hoá đơn nạp tiền</button>
-        <div class="note" style="margin-top:10px;">
-          * Khi nạp tiền thành công, số dư ví tăng và lưu vào lịch sử hoá đơn.
-        </div>
+    <div class="panel">
+      <h4>Tạo hóa đơn nạp tiền (Admin)</h4>
+      <div class="toolbar">
+        <input class="input" placeholder="Mã KH">
+        <input class="input" placeholder="Số tiền nạp">
+        <select class="select">
+          <option>Thành công</option>
+          <option>Thất bại</option>
+        </select>
+        <button class="btn primary">Tạo hóa đơn</button>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>
 
+<script>
+  const path = location.pathname.split("/").pop();
+  document.querySelectorAll(".menu-item").forEach(a=>{
+    if(a.getAttribute("href")===path) a.classList.add("active");
+  });
+</script>
 </body>
 </html>
