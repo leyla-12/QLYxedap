@@ -22,3 +22,35 @@
     location.replace("./index.html");
   }
 })();
+// ====== LOGOUT + AUTO ADD BUTTON TO SIDEBAR ======
+window.TNGO_logout = function () {
+  localStorage.removeItem("TNGO_SESSION");
+  sessionStorage.removeItem("TNGO_SESSION");
+  location.href = "./dang-nhap.html";
+};
+
+(function mountLogoutButton() {
+  // Chỉ làm trên trang quản trị (có sidebar), không làm trên trang đăng nhập
+  const current = location.pathname.split("/").pop();
+  if (current === "dang-nhap.html") return;
+
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+
+  // Tránh chèn trùng nếu trang đã có
+  if (sidebar.querySelector(".sidebar-logout")) return;
+
+  // Đảm bảo sidebar có position relative để đặt nút dưới cùng
+  const cs = getComputedStyle(sidebar);
+  if (cs.position === "static") sidebar.style.position = "relative";
+
+  const wrap = document.createElement("div");
+  wrap.className = "sidebar-logout";
+  wrap.innerHTML = `
+    <button class="logout-btn" type="button" onclick="TNGO_logout()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Đăng xuất
+    </button>
+  `;
+  sidebar.appendChild(wrap);
+})();
