@@ -9,343 +9,217 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/style.css" />
 
   <style>
-    :root{
-      --bg:#0b1220;
-      --card: rgba(15, 23, 42, .55);
-      --stroke: rgba(148,163,184,.25);
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --blue:#2563eb;
-      --blue2:#1d4ed8;
-      --danger:#ef4444;
-      --ok:#22c55e;
-      --shadow: 0 20px 60px rgba(0,0,0,.45);
-      --radius: 22px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background: var(--bg);
-      overflow:hidden;
-    }
-    .bg{
-      position:fixed; inset:0;
-      background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(37,99,235,.25), transparent 60%),
-        radial-gradient(900px 600px at 90% 90%, rgba(34,197,94,.18), transparent 60%),
-        linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.6)),
-        url("./assets/img/login-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      filter: saturate(1.05);
-      transform: scale(1.03);
-    }
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(2,6,23,.25);
-      backdrop-filter: blur(2px);
-    }
-    .wrap{
-      position:relative;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-    .card{
-      width:min(980px, 100%);
+    :root{ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body{ margin:0; min-height:100vh; }
+    .login-wrap{
+      min-height:100vh;
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:0;
-      border-radius: var(--radius);
-      border:1px solid var(--stroke);
-      background: linear-gradient(135deg, rgba(15,23,42,.65), rgba(15,23,42,.35));
-      box-shadow: var(--shadow);
-      overflow:hidden;
+      place-items:center;
+      padding:24px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.55)),
+        url("./assets/img/login-bg.jpg") center/cover no-repeat;
     }
-
-    /* LEFT: brand + slogan (gọn, không dài dòng) */
-    .left{
-      padding:36px 34px;
-      border-right:1px solid rgba(148,163,184,.18);
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      min-height: 520px;
+    .login-card{
+      width:min(520px, 100%);
+      border-radius:20px;
+      background: rgba(17, 24, 39, .55);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      padding:24px;
+      color:#fff;
     }
-    .brand{
+    .login-head{
       display:flex; align-items:center; gap:12px;
-      font-weight:800; letter-spacing:.2px;
+      margin-bottom:16px;
     }
-    .brand i{
-      width:42px; height:42px;
+    .login-logo{
+      width:44px; height:44px; border-radius:14px;
       display:grid; place-items:center;
-      border-radius:14px;
-      background: rgba(37,99,235,.18);
-      border:1px solid rgba(37,99,235,.25);
-      color:#93c5fd;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
     }
-    .brand span{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      font-weight:600;
-      margin-top:2px;
-    }
+    .login-title{ line-height:1.1; }
+    .login-title b{ display:block; font-size:18px; }
+    .login-title span{ color: rgba(255,255,255,.70); font-size:13px; }
 
-    .hero h1{
-      margin:14px 0 8px;
-      font-size:44px;
-      line-height:1.05;
-      letter-spacing:-.6px;
-    }
-    .hero p{
-      margin:0;
-      color: rgba(226,232,240,.85);
-      max-width: 42ch;
-      line-height:1.6;
-    }
+    .login-h1{ font-size:30px; margin:10px 0 6px; }
+    .login-sub{ color: rgba(255,255,255,.78); margin:0 0 18px; }
 
-    .social{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .social a{
-      width:40px; height:40px;
-      display:grid; place-items:center;
-      border-radius:12px;
-      border:1px solid rgba(148,163,184,.22);
-      background: rgba(2,6,23,.25);
-      color: rgba(226,232,240,.9);
-      text-decoration:none;
-      transition:.2s;
-    }
-    .social a:hover{
-      transform: translateY(-1px);
-      border-color: rgba(37,99,235,.4);
-    }
-
-    /* RIGHT: login form */
-    .right{
-      padding:36px 34px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:16px;
-    }
-    .title{
-      font-size:28px;
-      font-weight:800;
-      letter-spacing:-.3px;
-      margin:0;
-    }
-    .sub{
-      margin:0 0 10px;
-      color:var(--muted);
-      font-size:14px;
-    }
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top:10px;
-    }
-    .label{
-      font-size:13px;
-      color: rgba(226,232,240,.9);
-      font-weight:600;
-    }
+    .field{ margin:12px 0; }
+    .label{ font-size:13px; color: rgba(255,255,255,.75); margin-bottom:6px; display:block; }
     .input{
+      width:100%;
+      box-sizing:border-box;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      padding:12px 12px 12px 40px;
+      color:#fff;
+      outline:none;
+    }
+    .input:focus{ border-color: rgba(59,130,246,.8); box-shadow: 0 0 0 3px rgba(59,130,246,.25); }
+    .icon{
       position:relative;
     }
-    .input i{
-      position:absolute;
-      left:12px; top:50%;
+    .icon i{
+      position:absolute; left:12px; top:50%;
       transform:translateY(-50%);
-      color: rgba(148,163,184,.9);
-      font-size:14px;
+      color: rgba(255,255,255,.55);
     }
-    .input input{
-      width:100%;
-      padding:12px 12px 12px 38px;
-      border-radius:14px;
-      border:1px solid rgba(148,163,184,.25);
-      background: rgba(2,6,23,.25);
-      color: var(--text);
-      outline:none;
-      transition:.2s;
-    }
-    .input input:focus{
-      border-color: rgba(37,99,235,.55);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.15);
-    }
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:8px;
-    }
-    .check{
-      display:flex; align-items:center; gap:8px;
-      color: rgba(226,232,240,.9);
-      font-size:13px;
-    }
-    .check input{accent-color: var(--blue)}
-    .link{
-      color:#93c5fd;
-      text-decoration:none;
-      font-size:13px;
-    }
-    .link:hover{text-decoration:underline}
 
-    .btn{
-      margin-top:8px;
+    .row{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; margin:10px 0 14px;
+      color: rgba(255,255,255,.75);
+      font-size:13px;
+    }
+    .row a{ color:#93c5fd; text-decoration:none; }
+    .row a:hover{ text-decoration:underline; }
+
+    .btn-login{
       width:100%;
       border:none;
-      border-radius:14px;
+      border-radius:12px;
       padding:12px 14px;
-      background: linear-gradient(135deg, var(--blue), var(--blue2));
-      color:white;
       font-weight:800;
       cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      transition:.2s;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      color:#fff;
+      display:flex; align-items:center; justify-content:center; gap:10px;
     }
-    .btn:hover{filter:brightness(1.05)}
-    .btn:active{transform:translateY(1px)}
+    .btn-login:active{ transform: translateY(1px); }
+
     .msg{
-      display:none;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(148,163,184,.25);
-      background: rgba(2,6,23,.25);
+      margin-top:12px;
       font-size:13px;
-      line-height:1.4;
+      color: rgba(255,255,255,.78);
+      min-height:18px;
     }
-    .msg.err{border-color: rgba(239,68,68,.35); color:#fecaca}
-    .msg.ok{border-color: rgba(34,197,94,.35); color:#bbf7d0}
 
-    .foot{
-      margin-top:10px;
-      color: rgba(148,163,184,.9);
+    .login-foot{
+      margin-top:16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top:14px;
+      color: rgba(255,255,255,.65);
       font-size:12px;
-      text-align:center;
     }
-
-    @media (max-width: 880px){
-      body{overflow:auto}
-      .bg{transform:none}
-      .card{grid-template-columns:1fr}
-      .left{border-right:none; border-bottom:1px solid rgba(148,163,184,.18); min-height:auto}
-      .hero h1{font-size:34px}
+    .social{ display:flex; gap:10px; }
+    .social a{
+      width:36px; height:36px; border-radius:12px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      text-decoration:none;
     }
+    .social a:hover{ background: rgba(255,255,255,.12); }
   </style>
 </head>
 
 <body>
-  <div class="bg"></div>
-  <div class="overlay"></div>
-
-  <div class="wrap">
-    <div class="card">
-      <!-- LEFT -->
-      <div class="left">
-        <div class="brand">
-          <i class="fa-solid fa-bicycle"></i>
-          <div>
-            TNGO Bike
-            <span>Public Bike Admin</span>
-          </div>
-        </div>
-
-        <div class="hero">
-          <h1>Đăng nhập</h1>
-          <p>Đăng nhập theo phân quyền để quản lý trạm xe, xe đạp, khách hàng, chuyến đi, hoá đơn và báo cáo.</p>
-        </div>
-
-        <div class="social">
-          <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="#" title="Google"><i class="fa-brands fa-google"></i></a>
-          <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-head">
+        <div class="login-logo"><i class="fa-solid fa-bicycle"></i></div>
+        <div class="login-title">
+          <b>TNGO Bike</b>
+          <span>Đăng nhập hệ thống</span>
         </div>
       </div>
 
-      <!-- RIGHT -->
-      <div class="right">
-        <h2 class="title">TNGO Panel</h2>
-        <p class="sub">Nhập tài khoản và mật khẩu để tiếp tục.</p>
+      <div class="login-h1">Đăng nhập</div>
+      <p class="login-sub">Vui lòng nhập tài khoản và mật khẩu để truy cập.</p>
 
-        <form id="loginForm" autocomplete="on">
-          <div class="field">
-            <div class="label">Tài khoản</div>
-            <div class="input">
-              <i class="fa-solid fa-user"></i>
-              <input id="loginUser" placeholder="VD: ADMIN01" required />
-            </div>
+      <form id="loginForm" autocomplete="on">
+        <div class="field">
+          <label class="label">Tài khoản</label>
+          <div class="icon">
+            <i class="fa-solid fa-user"></i>
+            <input class="input" id="username" placeholder="VD: ADMIN01 hoặc NVTR01" />
           </div>
+        </div>
 
-          <div class="field">
-            <div class="label">Mật khẩu</div>
-            <div class="input">
-              <i class="fa-solid fa-lock"></i>
-              <input id="loginPass" type="password" placeholder="Nhập mật khẩu" required />
-            </div>
+        <div class="field">
+          <label class="label">Mật khẩu</label>
+          <div class="icon">
+            <i class="fa-solid fa-lock"></i>
+            <input class="input" id="password" type="password" placeholder="Nhập mật khẩu" />
           </div>
+        </div>
 
-          <div class="row">
-            <label class="check">
-              <input id="rememberMe" type="checkbox" checked />
-              Ghi nhớ đăng nhập
-            </label>
-            <a class="link" href="#" onclick="alert('Demo FE: chưa triển khai quên mật khẩu.'); return false;">Quên mật khẩu?</a>
-          </div>
+        <div class="row">
+          <label style="display:flex;gap:8px;align-items:center;cursor:pointer;">
+            <input id="remember" type="checkbox" checked />
+            Ghi nhớ đăng nhập
+          </label>
+          <a href="#" onclick="alert('Demo FE: chưa triển khai quên mật khẩu');return false;">Quên mật khẩu?</a>
+        </div>
 
-          <div id="loginMsg" class="msg"></div>
+        <button class="btn-login" type="submit">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Đăng nhập
+        </button>
 
-          <button id="btnLogin" class="btn" type="submit">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            Đăng nhập
-          </button>
+        <div class="msg" id="msg"></div>
+      </form>
 
-          <div class="foot">© TNGO Bike — Front-end demo (LocalStorage)</div>
-        </form>
+      <div class="login-foot">
+        <div>© TNGO Bike • FE Admin Panel</div>
+        <div class="social">
+          <a href="#" title="Facebook" onclick="return false;"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" title="Google" onclick="return false;"><i class="fa-brands fa-google"></i></a>
+          <a href="#" title="Github" onclick="return false;"><i class="fa-brands fa-github"></i></a>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- dùng chung script -->
-  <script src="./assets/js/script.js"></script>
-
   <script>
-    // đảm bảo trang login KHÔNG bị đá văng sai
-    // (script.js đã có guardAuth; nó sẽ cho login page chạy bình thường)
-    const form = document.getElementById("loginForm");
-    const msg  = document.getElementById("loginMsg");
+    // ====== LOGIN (tối giản) ======
+    const USERS = [
+      { username:"ADMIN01", password:"Admin@123", role:"QUANTRIVIEN", name:"Admin", avatar:"./assets/img/admin.png" },
+      { username:"NVTR01",  password:"Nvtr@123",  role:"NHANVIENTRAM", name:"NV Trạm", avatar:"./assets/img/nv.png" }
+    ];
 
-    form.addEventListener("submit", (e) => {
+    // Nếu đã login thì đá về index
+    (function(){
+      const s = localStorage.getItem("TNGO_SESSION") || sessionStorage.getItem("TNGO_SESSION");
+      if (s) location.href = "./index.html";
+    })();
+
+    document.getElementById("loginForm").addEventListener("submit", (e)=>{
       e.preventDefault();
-      const username = document.getElementById("loginUser").value;
-      const password = document.getElementById("loginPass").value;
-      const remember = document.getElementById("rememberMe").checked;
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value.trim();
+      const remember = document.getElementById("remember").checked;
+      const msg = document.getElementById("msg");
 
-      const res = handleLogin(username, password, remember);
+      const found = USERS.find(x => x.username === u && x.password === p);
+      if (!found){
+        msg.textContent = "Sai tài khoản hoặc mật khẩu.";
+        return;
+      }
 
-      msg.style.display = "block";
-      msg.className = "msg " + (res.ok ? "ok" : "err");
-      msg.textContent = res.msg;
+      const sess = {
+        username: found.username,
+        role: found.role,
+        name: found.name,
+        avatar: found.avatar,
+        time: Date.now()
+      };
 
-      if (res.ok) setTimeout(() => location.href = "index.html", 300);
+      const key = "TNGO_SESSION";
+      if (remember) localStorage.setItem(key, JSON.stringify(sess));
+      else sessionStorage.setItem(key, JSON.stringify(sess));
+
+      msg.textContent = "Đăng nhập thành công! Đang chuyển trang...";
+      setTimeout(()=> location.href = "./index.html", 500);
     });
   </script>
 </body>
