@@ -1,55 +1,63 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dashboard - TNGO</title>
-<link rel="stylesheet" href="./assets/css/style.css?v=999">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <title>Dashboard</title>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-    <h2>TNGO Bike</h2>
-    <ul>
-        <li><a href="index.html">Dashboard</a></li>
-        <li><a href="tram-xe.html">Quản lý trạm xe</a></li>
-        <li><a href="xe-dap.html">Quản lý xe đạp</a></li>
-        <li><a href="khach-hang.html">Quản lý khách hàng</a></li>
-        <li><a href="chuyen-di.html">Quản lý chuyến đi</a></li>
-        <li><a href="hoa-don.html">Quản lý hoá đơn</a></li>
-        <li><a href="bao-cao.html">Báo cáo thống kê</a></li>
-    </ul>
-</div>
-
-<!-- Main -->
-<div class="main">
-    <div class="header">
-        <h3>Dashboard hệ thống xe đạp công cộng</h3>
-        <span>Xin chào, Admin</span>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo"><i class="fa-solid fa-bicycle"></i></div>
+    <div>
+      <div class="brand-name">TNGO Bike</div>
+      <div class="brand-sub">Admin Panel</div>
     </div>
+  </div>
 
-    <div class="content">
-        <div class="cards">
-            <div class="card">
-                <h4>Tổng số trạm</h4>
-                <span>8</span>
-            </div>
-            <div class="card">
-                <h4>Tổng số xe</h4>
-                <span>120</span>
-            </div>
-            <div class="card">
-                <h4>Chuyến đi hôm nay</h4>
-                <span>45</span>
-            </div>
-            <div class="card">
-                <h4>Doanh thu hôm nay</h4>
-                <span>2.500.000đ</span>
-            </div>
-        </div>
+  <nav class="menu">
+    <div class="menu-title">Navigation</div>
+    <a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+    <a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i><span>Quản lý trạm xe</span></a>
+    <a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i><span>Quản lý xe đạp</span></a>
+    <a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i><span>Quản lý khách hàng</span></a>
+    <a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i><span>Quản lý chuyến đi</span></a>
+    <a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i><span>Quản lý hóa đơn</span></a>
+    <a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i><span>Báo cáo thống kê</span></a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="page-title">
+      <h3>Dashboard</h3>
+      <span class="muted">Tổng quan hệ thống</span>
     </div>
-</div>
+  </header>
 
+  <section class="page">
+    <div class="cards">
+      <div class="card"><h4>Tổng xe</h4><span>120</span></div>
+      <div class="card"><h4>Khách hàng</h4><span>340</span></div>
+      <div class="card"><h4>Chuyến đi</h4><span>1.250</span></div>
+      <div class="card"><h4>Doanh thu</h4><span>25.000.000đ</span></div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const path = location.pathname.split("/").pop();
+  document.querySelectorAll(".menu-item").forEach(a=>{
+    if(a.getAttribute("href")===path) a.classList.add("active");
+  });
+</script>
 </body>
 </html>
