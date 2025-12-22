@@ -6,10 +6,24 @@
   // =================== AUTH + ROLE (FE) ===================
   const SESSION_KEY = "TNGO_SESSION";
 
+  // ĐĂNG NHẬP BẰNG SĐT (phone)
+  // QUANTRIVIEN: toàn quyền
+  // NHANVIENTRAM: không được xoá
   const DEMO_USERS = [
-    { username: "ADMIN01", password: "Admin@123", role: "QUANTRIVIEN",   name: "Admin",  avatar: "./assets/img/admin.png" },
-    { username: "NVTR01",  password: "Nvtr@123",  role: "NHANVIENTRAM", name: "NV Trạm", avatar: "./assets/img/staff.png" },
+    { phone: "0900000001", password: "Admin@123", role: "QUANTRIVIEN",   name: "Admin",  avatar: "./assets/img/admin.png" },
+    { phone: "0900000002", password: "Nvtr@123",  role: "NHANVIENTRAM", name: "NV Trạm", avatar: "./assets/img/staff.png" },
   ];
+
+  // Chuẩn hoá SĐT: chỉ giữ số (bỏ khoảng trắng, dấu chấm, +84...)
+  function normalizePhone(input) {
+    let s = String(input || "").trim();
+    // đổi +84xxxxxxxxx -> 0xxxxxxxxx (nếu bạn muốn)
+    s = s.replace(/\s+/g, "");
+    s = s.replace(/^\+?84/, "0");
+    // chỉ giữ chữ số
+    s = s.replace(/\D/g, "");
+    return s;
+  }
 
   function getSession() {
     const s = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
@@ -26,15 +40,19 @@
   }
 
   // dùng cho trang đăng nhập
-  function handleLogin(username, password, remember = true) {
-    const u = String(username || "").trim().toUpperCase();
+  // phoneInput: SĐT người dùng nhập
+  function handleLogin(phoneInput, password, remember = true) {
+    const phone = normalizePhone(phoneInput);
     const p = String(password || "").trim();
 
-    const found = DEMO_USERS.find(x => x.username === u && x.password === p);
-    if (!found) return { ok: false, msg: "Sai tài khoản hoặc mật khẩu." };
+    if (!phone) return { ok: false, msg: "Vui lòng nhập số điện thoại." };
+    if (!p) return { ok: false, msg: "Vui lòng nhập mật khẩu." };
+
+    const found = DEMO_USERS.find(x => normalizePhone(x.phone) === phone && x.password === p);
+    if (!found) return { ok: false, msg: "Sai số điện thoại hoặc mật khẩu." };
 
     const sess = {
-      username: found.username,
+      phone: normalizePhone(found.phone),
       role: found.role,
       name: found.name,
       avatar: found.avatar,
@@ -91,7 +109,8 @@
     const avaEl  = document.getElementById("topbarAvatar");
     const outBtn = document.getElementById("btnLogout");
 
-    if (nameEl) nameEl.textContent = sess.name || sess.username;
+    // hiển thị name, nếu không có name thì fallback sang phone
+    if (nameEl) nameEl.textContent = sess.name || sess.phone || "";
     if (roleEl) roleEl.textContent = roleLabel(sess.role);
     if (avaEl)  avaEl.src = sess.avatar || "./assets/img/admin.png";
     if (outBtn) outBtn.addEventListener("click", logout);
@@ -406,7 +425,7 @@
     `).join("");
   }
 
-  // =================== Reports (giữ nguyên như bạn) ===================
+  // =================== Reports (giữ nguyên) ===================
   function renderReports(){
     const k1 = $("kpiStations"), k2 = $("kpiBikes"), k3 = $("kpiRevenue");
     if(!k1 && !$("reportStationTbody") && !$("reportBikeTbody")) return;
@@ -491,7 +510,6 @@
     });
 
     // ===== Các phần khác giữ nguyên y như bạn (bike/customer/trip/invoice...) =====
-    // (mình không chỉnh tiếp để tránh ảnh hưởng các trang khác)
 
     document.addEventListener("click", (e)=>{
       const db = getDB();
