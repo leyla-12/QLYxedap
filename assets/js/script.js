@@ -1,12 +1,13 @@
 (() => {
+  // tránh load 2 lần (phòng khi bạn include trùng)
+  if (window.__TNGO_SCRIPT_LOADED__) return;
+  window.__TNGO_SCRIPT_LOADED__ = true;
+
   // =================== AUTH + ROLE (FE) ===================
   const SESSION_KEY = "TNGO_SESSION";
 
-  // Demo users (FE)
-  // QUANTRIVIEN: toàn quyền
-  // NHANVIENTRAM: không được xoá
   const DEMO_USERS = [
-    { username: "ADMIN01", password: "Admin@123", role: "QUANTRIVIEN", name: "Admin", avatar: "./assets/img/admin.png" },
+    { username: "ADMIN01", password: "Admin@123", role: "QUANTRIVIEN",   name: "Admin",  avatar: "./assets/img/admin.png" },
     { username: "NVTR01",  password: "Nvtr@123",  role: "NHANVIENTRAM", name: "NV Trạm", avatar: "./assets/img/staff.png" },
   ];
 
@@ -24,7 +25,7 @@
     else sessionStorage.setItem(SESSION_KEY, str);
   }
 
-  // ✅ HÀM TRANG LOGIN CẦN
+  // dùng cho trang đăng nhập
   function handleLogin(username, password, remember = true) {
     const u = String(username || "").trim().toUpperCase();
     const p = String(password || "").trim();
@@ -65,7 +66,6 @@
     location.href = "./dang-nhap.html";
   }
 
-  // Quy tắc phân quyền
   function canDelete(role) {
     return role === "QUANTRIVIEN";
   }
@@ -82,7 +82,6 @@
     return role === "QUANTRIVIEN" ? "Quản trị viên" : "Nhân viên trạm";
   }
 
-  // set UI topbar (avatar góc phải)
   function renderTopbar() {
     const sess = getSession();
     if (!sess) return;
@@ -103,7 +102,6 @@
     if (!sess) return;
     if (canDelete(sess.role)) return;
 
-    // ✅ khoá đúng các nút xoá đang dùng trong HTML của bạn
     const selectors = [
       "[data-del-station]",
       "[data-del-bike]",
@@ -121,48 +119,56 @@
     });
   }
 
+  // chạy auth sớm
   (function bootAuth(){
     const sess = requireAuth();
     if (!sess) return;
     renderTopbar();
-    // delay nhẹ để chắc DOM render xong rồi mới khoá nút xoá
     window.addEventListener("DOMContentLoaded", lockDeleteButtonsIfNeeded);
   })();
 
-  // ========= Helpers =========
-  const $ = (s, root=document) => root.querySelector(s);
-  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+  // =================== Helpers ===================
+  // selector “chắc cú”: truyền "stationTbody" hoặc "#stationTbody" đều ra
+  const $ = (sel, root = document) => {
+    if (!sel) return null;
+    if (sel.startsWith("#") || sel.startsWith(".") || sel.includes("[") || sel.includes(" ")) {
+      return root.querySelector(sel);
+    }
+    return root.getElementById(sel);
+  };
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  const money = (n) => (Number(n||0)).toLocaleString("vi-VN") + "đ";
+  const money = (n) => (Number(n || 0)).toLocaleString("vi-VN") + "đ";
   const nowStr = () => {
     const d = new Date();
-    const pad = (x) => String(x).padStart(2,"0");
+    const pad = (x) => String(x).padStart(2, "0");
     return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
+  // =================== DB (localStorage) ===================
   const dbKey = "TNGO_DB_V1";
   const seed = {
     stations: [
-      { id:"TR01", name:"Cầu Giấy", address:"Cầu Giấy", capacity:25 },
-      { id:"TR02", name:"Dịch Vọng", address:"Dịch Vọng", capacity:20 },
+      { id:"TR01", name:"Cầu Giấy",      address:"Cầu Giấy",      capacity:25 },
+      { id:"TR02", name:"Dịch Vọng",     address:"Dịch Vọng",     capacity:20 },
       { id:"TR03", name:"Trần Duy Hưng", address:"Trần Duy Hưng", capacity:30 },
     ],
     bikes: [
-      { id:"XE001", status:"đang đậu", stationId:"TR01" },
+      { id:"XE001", status:"đang đậu",  stationId:"TR01" },
       { id:"XE014", status:"đang thuê", stationId:"TR02" },
-      { id:"XE078", status:"bảo trì", stationId:"TR03" },
+      { id:"XE078", status:"bảo trì",   stationId:"TR03" },
     ],
     customers: [
-      { id:"KH001", name:"Nguyễn An", gender:"Nữ", phone:"0987xxxxxx", wallet:120000 },
+      { id:"KH001", name:"Nguyễn An", gender:"Nữ",  phone:"0987xxxxxx", wallet:120000 },
       { id:"KH014", name:"Trần Minh", gender:"Nam", phone:"0909xxxxxx", wallet:35000 },
     ],
     trips: [
-      { id:"CD1001", customerId:"KH014", bikeId:"XE014", startStationId:"TR02", startTime:"19/12/2025 14:05", endTime:"", fee:0, status:"đang chạy" },
+      { id:"CD1001", customerId:"KH014", bikeId:"XE014", startStationId:"TR02", startTime:"19/12/2025 14:05", endTime:"",              fee:0,     status:"đang chạy" },
       { id:"CD1002", customerId:"KH001", bikeId:"XE001", startStationId:"TR01", startTime:"18/12/2025 09:12", endTime:"18/12/2025 09:45", fee:12000, status:"hoàn tất" },
     ],
     invoices: [
-      { id:"HD2001", customerId:"KH014", type:"nạp tiền", amount:50000, time:"19/12/2025 10:20", status:"thành công", ref:"" },
-      { id:"HD2002", customerId:"KH001", type:"trả cước", amount:-12000, time:"18/12/2025 09:45", status:"thành công", ref:"CD1002" },
+      { id:"HD2001", customerId:"KH014", type:"nạp tiền", amount: 50000, time:"19/12/2025 10:20", status:"thành công", ref:""      },
+      { id:"HD2002", customerId:"KH001", type:"trả cước", amount:-12000, time:"18/12/2025 09:45", status:"thành công", ref:"CD1002"},
     ]
   };
 
@@ -172,7 +178,8 @@
       localStorage.setItem(dbKey, JSON.stringify(seed));
       return structuredClone(seed);
     }
-    try { return JSON.parse(raw); } catch {
+    try { return JSON.parse(raw); }
+    catch {
       localStorage.setItem(dbKey, JSON.stringify(seed));
       return structuredClone(seed);
     }
@@ -182,10 +189,10 @@
   function nextId(prefix, list){
     let max = 0;
     for(const x of list){
-      const m = String(x.id||"").match(/\d+/);
-      if(m) max = Math.max(max, parseInt(m[0],10));
+      const m = String(x.id || "").match(/\d+/);
+      if(m) max = Math.max(max, parseInt(m[0], 10));
     }
-    return prefix + String(max+1).padStart(3,"0");
+    return prefix + String(max + 1).padStart(3, "0");
   }
 
   function exportCSV(filename, rows){
@@ -209,62 +216,58 @@
     $$(".menu-item").forEach(a => a.classList.toggle("active", a.getAttribute("href") === path));
   }
 
- // ========= Render: Stations =========
-function renderStations(){
-  const tbody = $("#stationTbody");
-  if(!tbody) return;
-
-  const db = getDB();
-  const q = ($("#stationSearch")?.value || "").trim().toLowerCase();
-
-  let list = db.stations;
-  if(q){
-    list = list.filter(s =>
-      s.id.toLowerCase().includes(q) ||
-      s.name.toLowerCase().includes(q) ||
-      s.address.toLowerCase().includes(q)
-    );
-  }
-
-  // ✅ số xe "đang đậu" tại trạm (xe khả dụng)
-  const availableCount = (stationId) =>
-    db.bikes.filter(b => b.stationId === stationId && b.status === "đang đậu").length;
-
-  tbody.innerHTML = list.map(s => `
-    <tr>
-      <td>${s.id}</td>
-      <td>${s.name}</td>
-      <td>${s.address}</td>
-      <td>${s.capacity}</td>
-      <td style="font-weight:800">${availableCount(s.id)}</td>
-      <td>
-        <button class="btn ghost" data-edit-station="${s.id}">
-          <i class="fa-solid fa-pen"></i>Sửa
-        </button>
-        <button class="btn danger" data-del-station="${s.id}">
-          <i class="fa-solid fa-trash"></i>Xoá
-        </button>
-      </td>
-    </tr>
-  `).join("");
-
-  lockDeleteButtonsIfNeeded();
-}
-
-  // ========= Render: Bikes =========
-  function renderBikes(){
-    const tbody = $("#bikeTbody");
+  // =================== Render: Stations ===================
+  function renderStations(){
+    const tbody = $("stationTbody");
     if(!tbody) return;
 
     const db = getDB();
-    const q = ($("#bikeSearch")?.value || "").trim().toLowerCase();
-    const status = $("#bikeStatusFilter")?.value || "";
-    const station = $("#bikeStationFilter")?.value || "";
+    const q = ($("stationSearch")?.value || "").trim().toLowerCase();
+
+    let list = db.stations;
+    if(q){
+      list = list.filter(s =>
+        s.id.toLowerCase().includes(q) ||
+        s.name.toLowerCase().includes(q) ||
+        s.address.toLowerCase().includes(q)
+      );
+    }
+
+    const availableCount = (stationId) =>
+      db.bikes.filter(b => b.stationId === stationId && b.status === "đang đậu").length;
+
+    tbody.innerHTML = list.map(s => `
+      <tr>
+        <td>${s.id}</td>
+        <td>${s.name}</td>
+        <td>${s.address}</td>
+        <td>${s.capacity}</td>
+        ${document.querySelector("th:nth-child(5)")?.textContent?.toLowerCase().includes("khả dụng")
+          ? `<td style="font-weight:800">${availableCount(s.id)}</td>` : ""
+        }
+        <td>
+          <button class="btn ghost" data-edit-station="${s.id}"><i class="fa-solid fa-pen"></i>Sửa</button>
+          <button class="btn danger" data-del-station="${s.id}"><i class="fa-solid fa-trash"></i>Xoá</button>
+        </td>
+      </tr>
+    `).join("");
+
+    lockDeleteButtonsIfNeeded();
+  }
+
+  // =================== Render: Bikes ===================
+  function renderBikes(){
+    const tbody = $("bikeTbody");
+    if(!tbody) return;
+
+    const db = getDB();
+    const q = ($("bikeSearch")?.value || "").trim().toLowerCase();
+    const status = $("bikeStatusFilter")?.value || "";
+    const station = $("bikeStationFilter")?.value || "";
 
     const stationName = (id) => db.stations.find(s=>s.id===id)?.name || id;
 
     let list = db.bikes;
-
     if(q) list = list.filter(b => b.id.toLowerCase().includes(q));
     if(status) list = list.filter(b => b.status === status);
     if(station) list = list.filter(b => b.stationId === station);
@@ -284,27 +287,27 @@ function renderStations(){
       `;
     }).join("");
 
-    const sel = $("#bikeStationFilter");
+    const sel = $("bikeStationFilter");
     if(sel && sel.dataset.filled !== "1"){
       sel.innerHTML = `<option value="">Lọc theo trạm</option>` +
         db.stations.map(s=>`<option value="${s.id}">${s.id} - ${s.name}</option>`).join("");
       sel.dataset.filled = "1";
     }
-    const sel2 = $("#bikeStation");
+    const sel2 = $("bikeStation");
     if(sel2 && sel2.dataset.filled !== "1"){
       sel2.innerHTML = db.stations.map(s=>`<option value="${s.id}">${s.id} - ${s.name}</option>`).join("");
       sel2.dataset.filled = "1";
     }
   }
 
-  // ========= Render: Customers =========
+  // =================== Render: Customers ===================
   function renderCustomers(){
-    const tbody = $("#customerTbody");
+    const tbody = $("customerTbody");
     if(!tbody) return;
 
     const db = getDB();
-    const q = ($("#customerSearch")?.value || "").trim().toLowerCase();
-    const gender = $("#customerGenderFilter")?.value || "";
+    const q = ($("customerSearch")?.value || "").trim().toLowerCase();
+    const gender = $("customerGenderFilter")?.value || "";
 
     let list = db.customers;
     if(q){
@@ -331,14 +334,14 @@ function renderStations(){
     `).join("");
   }
 
-  // ========= Render: Trips =========
+  // =================== Render: Trips ===================
   function renderTrips(){
-    const tbody = $("#tripTbody");
+    const tbody = $("tripTbody");
     if(!tbody) return;
 
     const db = getDB();
-    const q = ($("#tripSearch")?.value || "").trim().toLowerCase();
-    const status = $("#tripStatusFilter")?.value || "";
+    const q = ($("tripSearch")?.value || "").trim().toLowerCase();
+    const status = $("tripStatusFilter")?.value || "";
 
     const cusName = (id)=> db.customers.find(c=>c.id===id)?.name || id;
 
@@ -374,14 +377,14 @@ function renderStations(){
     }).join("");
   }
 
-  // ========= Render: Invoices =========
+  // =================== Render: Invoices ===================
   function renderInvoices(){
-    const tbody = $("#invoiceTbody");
+    const tbody = $("invoiceTbody");
     if(!tbody) return;
 
     const db = getDB();
-    const q = ($("#invoiceSearch")?.value || "").trim().toLowerCase();
-    const type = $("#invoiceTypeFilter")?.value || "";
+    const q = ($("invoiceSearch")?.value || "").trim().toLowerCase();
+    const type = $("invoiceTypeFilter")?.value || "";
 
     let list = db.invoices;
     if(q) list = list.filter(i =>
@@ -407,10 +410,10 @@ function renderStations(){
     `).join("");
   }
 
-  // ========= Reports =========
+  // =================== Reports ===================
   function renderReports(){
-    const k1 = $("#kpiStations"), k2=$("#kpiBikes"), k3=$("#kpiRevenue");
-    if(!k1 && !$("#reportStationTbody") && !$("#reportBikeTbody")) return;
+    const k1 = $("kpiStations"), k2 = $("kpiBikes"), k3 = $("kpiRevenue");
+    if(!k1 && !$("reportStationTbody") && !$("reportBikeTbody")) return;
 
     const db = getDB();
     if(k1) k1.textContent = db.stations.length;
@@ -421,28 +424,28 @@ function renderStations(){
       k3.textContent = money(sum);
     }
 
-    const stT = $("#reportStationTbody");
+    const stT = $("reportStationTbody");
     if(stT){
       stT.innerHTML = db.stations.map(s=>`
         <tr><td>${s.id}</td><td>${s.name}</td><td>${s.address}</td><td>${s.capacity}</td></tr>
       `).join("");
     }
 
-    const bkT = $("#reportBikeTbody");
+    const bkT = $("reportBikeTbody");
     if(bkT){
       bkT.innerHTML = db.bikes.map(b=>`
         <tr><td>${b.id}</td><td>${b.status}</td><td>${b.stationId}</td></tr>
       `).join("");
     }
 
-    const cusT = $("#reportCustomerTbody");
+    const cusT = $("reportCustomerTbody");
     if(cusT){
       cusT.innerHTML = db.customers.map(c=>`
         <tr><td>${c.id}</td><td>${c.name}</td><td>${c.gender}</td><td>${c.phone}</td><td>${money(c.wallet)}</td></tr>
       `).join("");
     }
 
-    const invT = $("#reportInvoiceTbody");
+    const invT = $("reportInvoiceTbody");
     if(invT){
       invT.innerHTML = db.invoices.map(i=>`
         <tr><td>${i.id}</td><td>${i.customerId}</td><td>${i.type}</td><td>${money(i.amount)}</td><td>${i.time}</td><td>${i.status}</td></tr>
@@ -450,33 +453,39 @@ function renderStations(){
     }
   }
 
-  // ========= Actions =========
+  // =================== Actions ===================
   function bindActions(){
-    $("#stationSearch")?.addEventListener("input", renderStations);
-    $("#bikeSearch")?.addEventListener("input", renderBikes);
-    $("#bikeStatusFilter")?.addEventListener("change", renderBikes);
-    $("#bikeStationFilter")?.addEventListener("change", renderBikes);
-    $("#customerSearch")?.addEventListener("input", renderCustomers);
-    $("#customerGenderFilter")?.addEventListener("change", renderCustomers);
-    $("#tripSearch")?.addEventListener("input", renderTrips);
-    $("#tripStatusFilter")?.addEventListener("change", renderTrips);
-    $("#invoiceSearch")?.addEventListener("input", renderInvoices);
-    $("#invoiceTypeFilter")?.addEventListener("change", renderInvoices);
+    $("stationSearch")?.addEventListener("input", renderStations);
 
-    $("#exportStations")?.addEventListener("click", ()=> exportCSV("tram-xe.csv", getDB().stations));
-    $("#exportBikes")?.addEventListener("click", ()=> exportCSV("xe-dap.csv", getDB().bikes));
-    $("#exportCustomers")?.addEventListener("click", ()=> exportCSV("khach-hang.csv", getDB().customers));
-    $("#exportTrips")?.addEventListener("click", ()=> exportCSV("chuyen-di.csv", getDB().trips));
-    $("#exportInvoices")?.addEventListener("click", ()=> exportCSV("hoa-don.csv", getDB().invoices));
+    $("bikeSearch")?.addEventListener("input", renderBikes);
+    $("bikeStatusFilter")?.addEventListener("change", renderBikes);
+    $("bikeStationFilter")?.addEventListener("change", renderBikes);
 
-    $("#btnAddStation")?.addEventListener("click", ()=>{
+    $("customerSearch")?.addEventListener("input", renderCustomers);
+    $("customerGenderFilter")?.addEventListener("change", renderCustomers);
+
+    $("tripSearch")?.addEventListener("input", renderTrips);
+    $("tripStatusFilter")?.addEventListener("change", renderTrips);
+
+    $("invoiceSearch")?.addEventListener("input", renderInvoices);
+    $("invoiceTypeFilter")?.addEventListener("change", renderInvoices);
+
+    $("exportStations")?.addEventListener("click", ()=> exportCSV("tram-xe.csv", getDB().stations));
+    $("exportBikes")?.addEventListener("click", ()=> exportCSV("xe-dap.csv", getDB().bikes));
+    $("exportCustomers")?.addEventListener("click", ()=> exportCSV("khach-hang.csv", getDB().customers));
+    $("exportTrips")?.addEventListener("click", ()=> exportCSV("chuyen-di.csv", getDB().trips));
+    $("exportInvoices")?.addEventListener("click", ()=> exportCSV("hoa-don.csv", getDB().invoices));
+
+    $("btnAddStation")?.addEventListener("click", ()=>{
       const db = getDB();
-      const id = ($("#stationId").value.trim() || nextId("TR", db.stations));
-      const name = $("#stationName").value.trim();
-      const address = $("#stationAddress").value.trim();
-      const capacity = Number($("#stationCapacity").value || 0);
+      const id = ($("stationId")?.value.trim() || nextId("TR", db.stations));
+      const name = $("stationName")?.value.trim();
+      const address = $("stationAddress")?.value.trim();
+      const capacity = Number($("stationCapacity")?.value || 0);
+
       if(!name || !address || !capacity) return alert("Nhập đủ thông tin trạm!");
       if(db.stations.some(s=>s.id===id)) return alert("Mã trạm đã tồn tại!");
+
       db.stations.push({id,name,address,capacity});
       saveDB(db);
       renderStations(); renderBikes(); renderReports();
@@ -484,12 +493,14 @@ function renderStations(){
       alert("Đã thêm trạm!");
     });
 
-    $("#btnSaveBike")?.addEventListener("click", ()=>{
+    $("btnSaveBike")?.addEventListener("click", ()=>{
       const db = getDB();
-      const id = ($("#bikeId").value.trim() || nextId("XE", db.bikes));
-      const status = $("#bikeStatus").value;
-      const stationId = $("#bikeStation").value;
+      const id = ($("bikeId")?.value.trim() || nextId("XE", db.bikes));
+      const status = $("bikeStatus")?.value;
+      const stationId = $("bikeStation")?.value;
+
       if(!id || !status || !stationId) return alert("Nhập đủ thông tin xe!");
+
       const exist = db.bikes.find(b=>b.id===id);
       if(exist){
         exist.status = status;
@@ -497,21 +508,24 @@ function renderStations(){
       }else{
         db.bikes.push({id,status,stationId});
       }
+
       saveDB(db);
-      renderBikes(); renderReports();
+      renderBikes(); renderReports(); renderStations();
       lockDeleteButtonsIfNeeded();
       alert("Đã lưu xe!");
     });
 
-    $("#btnAddCustomer")?.addEventListener("click", ()=>{
+    $("btnAddCustomer")?.addEventListener("click", ()=>{
       const db = getDB();
-      const id = ($("#customerId").value.trim() || nextId("KH", db.customers));
-      const name = $("#customerName").value.trim();
-      const gender = $("#customerGender").value;
-      const phone = $("#customerPhone").value.trim();
-      const wallet = Number($("#customerWallet").value || 0);
+      const id = ($("customerId")?.value.trim() || nextId("KH", db.customers));
+      const name = $("customerName")?.value.trim();
+      const gender = $("customerGender")?.value;
+      const phone = $("customerPhone")?.value.trim();
+      const wallet = Number($("customerWallet")?.value || 0);
+
       if(!name || !phone) return alert("Nhập họ tên + SĐT!");
       if(db.customers.some(c=>c.id===id)) return alert("Mã KH đã tồn tại!");
+
       db.customers.push({id,name,gender,phone,wallet});
       saveDB(db);
       renderCustomers(); renderReports();
@@ -519,11 +533,12 @@ function renderStations(){
       alert("Đã thêm khách hàng!");
     });
 
-    $("#btnTopup")?.addEventListener("click", ()=>{
+    $("btnTopup")?.addEventListener("click", ()=>{
       const db = getDB();
-      const customerId = $("#topupCustomerId").value.trim();
-      const amount = Number($("#topupAmount").value || 0);
-      const status = $("#topupStatus").value;
+      const customerId = $("topupCustomerId")?.value.trim();
+      const amount = Number($("topupAmount")?.value || 0);
+      const status = $("topupStatus")?.value;
+
       if(!customerId || !amount) return alert("Nhập mã KH và số tiền nạp!");
       const c = db.customers.find(x=>x.id===customerId);
       if(!c) return alert("Không tìm thấy khách hàng!");
@@ -545,13 +560,14 @@ function renderStations(){
       // Stations
       const es = e.target.closest("[data-edit-station]")?.dataset.editStation;
       const ds = e.target.closest("[data-del-station]")?.dataset.delStation;
+
       if(es){
         const s = db.stations.find(x=>x.id===es);
         if(!s) return;
-        $("#stationId").value = s.id;
-        $("#stationName").value = s.name;
-        $("#stationAddress").value = s.address;
-        $("#stationCapacity").value = s.capacity;
+        $("stationId").value = s.id;
+        $("stationName").value = s.name;
+        $("stationAddress").value = s.address;
+        $("stationCapacity").value = s.capacity;
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(ds){
@@ -566,12 +582,13 @@ function renderStations(){
       // Bikes
       const eb = e.target.closest("[data-edit-bike]")?.dataset.editBike;
       const dbk = e.target.closest("[data-del-bike]")?.dataset.delBike;
+
       if(eb){
         const b = db.bikes.find(x=>x.id===eb);
         if(!b) return;
-        $("#bikeId").value = b.id;
-        $("#bikeStatus").value = b.status;
-        $("#bikeStation").value = b.stationId;
+        $("bikeId").value = b.id;
+        $("bikeStatus").value = b.status;
+        $("bikeStation").value = b.stationId;
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(dbk){
@@ -579,21 +596,22 @@ function renderStations(){
         if(!confirm("Xoá xe " + dbk + " ?")) return;
         db.bikes = db.bikes.filter(x=>x.id!==dbk);
         saveDB(db);
-        renderBikes(); renderReports();
+        renderBikes(); renderStations(); renderReports();
         lockDeleteButtonsIfNeeded();
       }
 
       // Customers
       const ec = e.target.closest("[data-edit-customer]")?.dataset.editCustomer;
       const dc = e.target.closest("[data-del-customer]")?.dataset.delCustomer;
+
       if(ec){
         const c = db.customers.find(x=>x.id===ec);
         if(!c) return;
-        $("#customerId").value = c.id;
-        $("#customerName").value = c.name;
-        $("#customerGender").value = c.gender;
-        $("#customerPhone").value = c.phone;
-        $("#customerWallet").value = c.wallet;
+        $("customerId").value = c.id;
+        $("customerName").value = c.name;
+        $("customerGender").value = c.gender;
+        $("customerPhone").value = c.phone;
+        $("customerWallet").value = c.wallet;
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(dc){
@@ -631,7 +649,7 @@ function renderStations(){
         }
 
         saveDB(db);
-        renderTrips(); renderCustomers(); renderInvoices(); renderBikes(); renderReports();
+        renderTrips(); renderCustomers(); renderInvoices(); renderBikes(); renderStations(); renderReports();
         lockDeleteButtonsIfNeeded();
         alert("Đã kết thúc chuyến + tạo hoá đơn trả cước!");
       }
@@ -639,11 +657,11 @@ function renderStations(){
       if(editTrip){
         const t = db.trips.find(x=>x.id===editTrip);
         if(!t) return;
-        $("#tripId").value = t.id;
-        $("#tripCustomerId").value = t.customerId;
-        $("#tripBikeId").value = t.bikeId;
-        $("#tripStationId").value = t.startStationId;
-        $("#tripStartTime").value = t.startTime;
+        $("tripId").value = t.id;
+        $("tripCustomerId").value = t.customerId;
+        $("tripBikeId").value = t.bikeId;
+        $("tripStationId").value = t.startStationId;
+        $("tripStartTime").value = t.startTime;
         window.scrollTo({top:0,behavior:"smooth"});
       }
 
@@ -659,14 +677,15 @@ function renderStations(){
       // Invoices
       const delInv = e.target.closest("[data-del-invoice]")?.dataset.delInvoice;
       const editInv = e.target.closest("[data-edit-invoice]")?.dataset.editInvoice;
+
       if(editInv){
         const i = db.invoices.find(x=>x.id===editInv);
         if(!i) return;
-        $("#invoiceId").value = i.id;
-        $("#invoiceCustomerId").value = i.customerId;
-        $("#invoiceType").value = i.type;
-        $("#invoiceAmount").value = i.amount;
-        $("#invoiceStatus").value = i.status;
+        $("invoiceId").value = i.id;
+        $("invoiceCustomerId").value = i.customerId;
+        $("invoiceType").value = i.type;
+        $("invoiceAmount").value = i.amount;
+        $("invoiceStatus").value = i.status;
         window.scrollTo({top:0,behavior:"smooth"});
       }
       if(delInv){
@@ -679,15 +698,16 @@ function renderStations(){
       }
     });
 
-    $("#btnSaveTrip")?.addEventListener("click", ()=>{
+    $("btnSaveTrip")?.addEventListener("click", ()=>{
       const db = getDB();
-      const id = ($("#tripId").value.trim() || nextId("CD", db.trips));
-      const customerId = $("#tripCustomerId").value.trim();
-      const bikeId = $("#tripBikeId").value.trim();
-      const startStationId = $("#tripStationId").value.trim();
-      const startTime = $("#tripStartTime").value.trim() || nowStr();
+      const id = ($("tripId")?.value.trim() || nextId("CD", db.trips));
+      const customerId = $("tripCustomerId")?.value.trim();
+      const bikeId = $("tripBikeId")?.value.trim();
+      const startStationId = $("tripStationId")?.value.trim();
+      const startTime = $("tripStartTime")?.value.trim() || nowStr();
 
       if(!customerId || !bikeId || !startStationId) return alert("Nhập đủ KH/XE/Trạm!");
+
       const exist = db.trips.find(t=>t.id===id);
       if(exist){
         exist.customerId = customerId;
@@ -699,20 +719,23 @@ function renderStations(){
         const b = db.bikes.find(x=>x.id===bikeId);
         if(b) b.status = "đang thuê";
       }
+
       saveDB(db);
-      renderTrips(); renderBikes(); renderReports();
+      renderTrips(); renderBikes(); renderStations(); renderReports();
       lockDeleteButtonsIfNeeded();
       alert("Đã lưu chuyến!");
     });
 
-    $("#btnSaveInvoice")?.addEventListener("click", ()=>{
+    $("btnSaveInvoice")?.addEventListener("click", ()=>{
       const db = getDB();
-      const id = ($("#invoiceId").value.trim() || nextId("HD", db.invoices));
-      const customerId = $("#invoiceCustomerId").value.trim();
-      const type = $("#invoiceType").value;
-      const amount = Number($("#invoiceAmount").value || 0);
-      const status = $("#invoiceStatus").value;
+      const id = ($("invoiceId")?.value.trim() || nextId("HD", db.invoices));
+      const customerId = $("invoiceCustomerId")?.value.trim();
+      const type = $("invoiceType")?.value;
+      const amount = Number($("invoiceAmount")?.value || 0);
+      const status = $("invoiceStatus")?.value;
+
       if(!customerId || !type) return alert("Nhập đủ thông tin hoá đơn!");
+
       const exist = db.invoices.find(i=>i.id===id);
       if(exist){
         exist.customerId = customerId;
@@ -722,13 +745,14 @@ function renderStations(){
       }else{
         db.invoices.push({id, customerId, type, amount, time: nowStr(), status, ref:""});
       }
+
       saveDB(db);
       renderInvoices(); renderReports();
       lockDeleteButtonsIfNeeded();
       alert("Đã lưu hoá đơn!");
     });
 
-    $("#btnResetAll")?.addEventListener("click", ()=>{
+    $("btnResetAll")?.addEventListener("click", ()=>{
       if(!confirm("Reset toàn bộ dữ liệu demo?")) return;
       localStorage.removeItem(dbKey);
       getDB();
@@ -755,7 +779,7 @@ function renderStations(){
 
   window.addEventListener("DOMContentLoaded", boot);
 
-  // expose for login page
+  // expose cho login page
   window.handleLogin = handleLogin;
   window.logout = logout;
 })();
