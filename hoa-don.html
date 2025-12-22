@@ -26,7 +26,7 @@
       <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
       <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
       <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
-      <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
+      <li><a class="menu-item active" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
       <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
     </ul>
   </aside>
@@ -49,67 +49,106 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid one">
       <div class="card">
         <div class="card-h">
           <b>Danh sách hoá đơn</b>
-          <div class="row">
+          <div class="card-actions">
+            <button class="btn primary" id="btnOpenAddInvoice">
+              <i class="fa-solid fa-plus"></i>Thêm hoá đơn
+            </button>
             <select class="select" id="invoiceTypeFilter">
               <option value="">Lọc theo loại</option>
               <option>nạp tiền</option>
               <option>trả cước</option>
             </select>
-            <button class="btn ghost" id="exportInvoices"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+            <button class="btn ghost" id="exportInvoices">
+              <i class="fa-solid fa-file-export"></i>Xuất CSV
+            </button>
           </div>
         </div>
+
         <div class="card-b">
           <table class="table">
             <thead>
-              <tr><th>Mã HĐ</th><th>Mã KH</th><th>Loại</th><th>Số tiền</th><th>Thời gian</th><th>Trạng thái</th><th>Tham chiếu</th><th>Hành động</th></tr>
+              <tr>
+                <th>Mã HĐ</th>
+                <th>Mã KH</th>
+                <th>Loại</th>
+                <th>Số tiền</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th>Tham chiếu</th>
+                <th style="width:170px">Hành động</th>
+              </tr>
             </thead>
             <tbody id="invoiceTbody"></tbody>
           </table>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-h"><b>Thêm / Sửa hoá đơn</b></div>
-        <div class="card-b">
-          <div class="field">
-            <div class="label">Mã HĐ (để trống để tự sinh)</div>
-            <input class="input" id="invoiceId" placeholder="VD: HD120" />
-          </div>
-          <div class="field">
-            <div class="label">Mã KH</div>
-            <input class="input" id="invoiceCustomerId" placeholder="VD: KH014" />
-          </div>
-          <div class="field">
-            <div class="label">Loại</div>
-            <select class="select" id="invoiceType">
-              <option>nạp tiền</option>
-              <option>trả cước</option>
-            </select>
-          </div>
-          <div class="field">
-            <div class="label">Số tiền (+ nạp / - trả cước)</div>
-            <input class="input" id="invoiceAmount" type="number" placeholder="VD: 50000 hoặc -12000" />
-          </div>
-          <div class="field">
-            <div class="label">Trạng thái</div>
-            <select class="select" id="invoiceStatus">
-              <option>thành công</option>
-              <option>thất bại</option>
-            </select>
-          </div>
-          <div style="margin-top:10px">
-            <button class="btn primary" id="btnSaveInvoice"><i class="fa-solid fa-floppy-disk"></i>Lưu hoá đơn</button>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 </div>
+
+<!-- Overlay + Drawer -->
+<div class="overlay" id="invoiceOverlay" hidden></div>
+
+<aside class="drawer" id="invoiceDrawer" aria-hidden="true">
+  <div class="drawer-h">
+    <div>
+      <div class="drawer-title" id="invoiceDrawerTitle">Thêm hoá đơn</div>
+      <div class="drawer-sub" id="invoiceDrawerSub">Nhập thông tin hoá đơn và bấm Lưu</div>
+    </div>
+    <button class="icon-btn" id="invoiceDrawerClose" title="Đóng">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="drawer-b">
+    <div class="field">
+      <div class="label">Mã HĐ (để trống để tự sinh)</div>
+      <input class="input" id="invoiceId" placeholder="VD: HD120" />
+      <div class="help">Khi sửa: mã HĐ sẽ bị khóa.</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Mã KH</div>
+      <input class="input" id="invoiceCustomerId" placeholder="VD: KH014" />
+    </div>
+
+    <div class="field">
+      <div class="label">Loại</div>
+      <select class="select" id="invoiceType">
+        <option>nạp tiền</option>
+        <option>trả cước</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="label">Số tiền (+ nạp / - trả cước)</div>
+      <input class="input" id="invoiceAmount" type="number" placeholder="VD: 50000 hoặc -12000" />
+    </div>
+
+    <div class="field">
+      <div class="label">Trạng thái</div>
+      <select class="select" id="invoiceStatus">
+        <option>thành công</option>
+        <option>thất bại</option>
+      </select>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn ghost" id="btnCancelInvoice">
+        <i class="fa-regular fa-circle-xmark"></i>Hủy
+      </button>
+      <button class="btn primary" id="btnSaveInvoice">
+        <i class="fa-solid fa-floppy-disk"></i>Lưu
+      </button>
+    </div>
+  </div>
+</aside>
+
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js?v=4"></script>
 </body>
 </html>
