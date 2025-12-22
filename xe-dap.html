@@ -23,7 +23,7 @@
     <ul class="nav">
       <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
       <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
-      <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
+      <li><a class="menu-item active" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
       <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
       <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
       <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
@@ -49,11 +49,14 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid one">
       <div class="card">
         <div class="card-h">
           <b>Danh sách xe</b>
-          <div class="row">
+          <div class="card-actions">
+            <button class="btn primary" id="btnOpenAddBike">
+              <i class="fa-solid fa-plus"></i>Thêm xe
+            </button>
             <select class="select" id="bikeStatusFilter">
               <option value="">Lọc theo trạng thái</option>
               <option>đang đậu</option>
@@ -63,49 +66,82 @@
             <select class="select" id="bikeStationFilter">
               <option value="">Lọc theo trạm</option>
             </select>
-            <button class="btn ghost" id="exportBikes"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+            <button class="btn ghost" id="exportBikes">
+              <i class="fa-solid fa-file-export"></i>Xuất CSV
+            </button>
           </div>
         </div>
+
         <div class="card-b">
           <table class="table">
             <thead>
-              <tr><th>Mã xe</th><th>Trạng thái</th><th>Trạm quản lý</th><th>Hành động</th></tr>
+              <tr>
+                <th style="width:130px">Mã xe</th>
+                <th style="width:140px">Trạng thái</th>
+                <th>Trạm quản lý</th>
+                <th style="width:170px">Hành động</th>
+              </tr>
             </thead>
             <tbody id="bikeTbody"></tbody>
           </table>
-          <div class="note">Bấm “Cập nhật” sẽ đổ dữ liệu lên form bên phải.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><b>Thêm / Cập nhật xe</b></div>
-        <div class="card-b">
-          <div class="field">
-            <div class="label">Mã xe (để trống để tự sinh)</div>
-            <input class="input" id="bikeId" placeholder="VD: XE120" />
-          </div>
-          <div class="field">
-            <div class="label">Trạng thái</div>
-            <select class="select" id="bikeStatus">
-              <option>đang đậu</option>
-              <option>đang thuê</option>
-              <option>bảo trì</option>
-            </select>
-          </div>
-          <div class="field">
-            <div class="label">Trạm</div>
-            <select class="select" id="bikeStation"></select>
-          </div>
-          <div style="margin-top:10px">
-            <button class="btn primary" id="btnSaveBike"><i class="fa-solid fa-floppy-disk"></i>Lưu thay đổi</button>
-          </div>
-          <div class="note">Nếu xe “đang thuê” thì trạm chỉ mang tính quản lý demo (FE).</div>
+          <div class="note">Bấm “Sửa” để mở form cập nhật. Bấm “Thêm xe” để tạo mới.</div>
         </div>
       </div>
     </div>
   </main>
 </div>
+
+<!-- Overlay + Drawer -->
+<div class="overlay" id="bikeOverlay" hidden></div>
+
+<aside class="drawer" id="bikeDrawer" aria-hidden="true">
+  <div class="drawer-h">
+    <div>
+      <div class="drawer-title" id="bikeDrawerTitle">Thêm xe</div>
+      <div class="drawer-sub" id="bikeDrawerSub">Nhập thông tin xe và bấm Lưu</div>
+    </div>
+    <button class="icon-btn" id="bikeDrawerClose" title="Đóng">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="drawer-b">
+    <div class="field">
+      <div class="label">Mã xe (để trống để tự sinh)</div>
+      <input class="input" id="bikeId" placeholder="VD: XE120" />
+      <div class="help">Khi sửa: mã xe sẽ bị khóa để tránh đổi key dữ liệu.</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Trạng thái</div>
+      <select class="select" id="bikeStatus">
+        <option>đang đậu</option>
+        <option>đang thuê</option>
+        <option>bảo trì</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="label">Trạm quản lý</div>
+      <select class="select" id="bikeStation"></select>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn ghost" id="btnCancelBike">
+        <i class="fa-regular fa-circle-xmark"></i>Hủy
+      </button>
+      <button class="btn primary" id="btnSaveBike">
+        <i class="fa-solid fa-floppy-disk"></i>Lưu
+      </button>
+    </div>
+
+    <div class="note" style="margin-top:10px">
+      Nếu xe “đang thuê” thì trạm chỉ mang tính quản lý demo (FE).
+    </div>
+  </div>
+</aside>
+
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js?v=4"></script>
 </body>
 </html>
