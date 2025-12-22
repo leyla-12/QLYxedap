@@ -67,9 +67,6 @@
                 <th>Tên trạm</th>
                 <th>Địa chỉ</th>
 
-                <!-- Thuộc tính cố định của trạm -->
-                <th style="width:110px">Sức chứa</th>
-
                 <!-- Chỉ số thống kê: tự tính từ danh sách xe đang “đang đậu” tại trạm -->
                 <th style="width:140px">Xe khả dụng</th>
 
@@ -83,7 +80,6 @@
                 <td>TR01</td>
                 <td>Cầu Giấy</td>
                 <td>123 Trần Duy Hưng</td>
-                <td>30</td>
                 <td>12</td>  <-- số xe “đang đậu” tại TR01 (tự tính)
                 <td>...</td>
               </tr>
@@ -117,11 +113,6 @@
             <input class="input" id="stationAddress" placeholder="VD: 56 Xuân Thủy, Cầu Giấy" />
           </div>
 
-          <div class="field">
-            <div class="label">Sức chứa (tối đa xe có thể chứa)</div>
-            <input class="input" id="stationCapacity" type="number" min="1" placeholder="VD: 30" />
-          </div>
-
           <div style="margin-top:10px">
             <button class="btn primary" id="btnAddStation">
               <i class="fa-solid fa-plus"></i>Lưu trạm
@@ -129,7 +120,7 @@
           </div>
 
           <div class="note" style="margin-top:10px">
-            Lưu ý: “Sức chứa” là thuộc tính trạm. “Xe khả dụng” sẽ được hệ thống tự thống kê theo danh sách xe.
+            “Xe khả dụng” sẽ được hệ thống tự thống kê theo danh sách xe.
           </div>
         </div>
       </div>
