@@ -66,24 +66,11 @@
                 <th style="width:110px">Mã trạm</th>
                 <th>Tên trạm</th>
                 <th>Địa chỉ</th>
-
-                <!-- Chỉ số thống kê: tự tính từ danh sách xe đang “đang đậu” tại trạm -->
                 <th style="width:140px">Xe khả dụng</th>
-
                 <th style="width:160px">Hành động</th>
               </tr>
             </thead>
 
-            <!--
-              stationTbody sẽ được script.js render theo dạng:
-              <tr>
-                <td>TR01</td>
-                <td>Cầu Giấy</td>
-                <td>123 Trần Duy Hưng</td>
-                <td>12</td>  <-- số xe “đang đậu” tại TR01 (tự tính)
-                <td>...</td>
-              </tr>
-            -->
             <tbody id="stationTbody"></tbody>
           </table>
 
@@ -120,7 +107,7 @@
           </div>
 
           <div class="note" style="margin-top:10px">
-            “Xe khả dụng” sẽ được hệ thống tự thống kê theo danh sách xe.
+            Lưu ý: Trạm gồm Mã/Tên/Địa chỉ. “Xe khả dụng” tự tính theo danh sách xe.
           </div>
         </div>
       </div>
@@ -129,6 +116,6 @@
 </div>
 
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js?v=2"></script>
+<script src="./assets/js/script.js?v=3"></script>
 </body>
 </html>
