@@ -243,14 +243,13 @@
     if (c4) c4.textContent = filterTrips(db, range).length;
     if (c5) c5.textContent = activeCustomersInRange(db, range).length;
   }
-
-  function setActiveTabUI(tab) {
-    $$(".report-tab").forEach((el) => {
-      const is = el.dataset.tab === tab;
-      el.style.border = is ? "1px solid #3b82f6" : "1px solid #e2e8f0";
-      el.style.boxShadow = is ? "0 0 0 3px rgba(59,130,246,.15)" : "none";
-    });
-  }
+function setActiveTabUI(tab) {
+  $$(".report-tab").forEach(el => {
+    const is = el.dataset.tab === tab;
+    el.style.border = is ? "1px solid #3b82f6" : "1px solid #e2e8f0";
+    el.style.boxShadow = is ? "0 0 0 3px rgba(59,130,246,.15)" : "none";
+  });
+}
 
   function renderReport(tab) {
     const db = getDBSafe();
