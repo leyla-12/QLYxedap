@@ -209,8 +209,25 @@
     $$(".menu-item").forEach(a => a.classList.toggle("active", a.getAttribute("href") === path));
   }
 
-  // ========= Render: Stations =========
-    const availableCount = (stationId) =>
+ // ========= Render: Stations =========
+function renderStations(){
+  const tbody = $("#stationTbody");
+  if(!tbody) return;
+
+  const db = getDB();
+  const q = ($("#stationSearch")?.value || "").trim().toLowerCase();
+
+  let list = db.stations;
+  if(q){
+    list = list.filter(s =>
+      s.id.toLowerCase().includes(q) ||
+      s.name.toLowerCase().includes(q) ||
+      s.address.toLowerCase().includes(q)
+    );
+  }
+
+  // ✅ số xe "đang đậu" tại trạm (xe khả dụng)
+  const availableCount = (stationId) =>
     db.bikes.filter(b => b.stationId === stationId && b.status === "đang đậu").length;
 
   tbody.innerHTML = list.map(s => `
@@ -230,6 +247,9 @@
       </td>
     </tr>
   `).join("");
+
+  lockDeleteButtonsIfNeeded();
+}
 
   // ========= Render: Bikes =========
   function renderBikes(){
