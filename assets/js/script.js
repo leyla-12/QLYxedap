@@ -210,35 +210,26 @@
   }
 
   // ========= Render: Stations =========
-  function renderStations(){
-    const tbody = $("#stationTbody");
-    if(!tbody) return;
+    const availableCount = (stationId) =>
+    db.bikes.filter(b => b.stationId === stationId && b.status === "đang đậu").length;
 
-    const db = getDB();
-    const q = ($("#stationSearch")?.value || "").trim().toLowerCase();
-
-    let list = db.stations;
-    if(q){
-      list = list.filter(s =>
-        s.id.toLowerCase().includes(q) ||
-        s.name.toLowerCase().includes(q) ||
-        s.address.toLowerCase().includes(q)
-      );
-    }
-
-    tbody.innerHTML = list.map(s => `
-      <tr>
-        <td>${s.id}</td>
-        <td>${s.name}</td>
-        <td>${s.address}</td>
-        <td>${s.capacity}</td>
-        <td>
-          <button class="btn ghost" data-edit-station="${s.id}"><i class="fa-solid fa-pen"></i>Sửa</button>
-          <button class="btn danger" data-del-station="${s.id}"><i class="fa-solid fa-trash"></i>Xoá</button>
-        </td>
-      </tr>
-    `).join("");
-  }
+  tbody.innerHTML = list.map(s => `
+    <tr>
+      <td>${s.id}</td>
+      <td>${s.name}</td>
+      <td>${s.address}</td>
+      <td>${s.capacity}</td>
+      <td style="font-weight:800">${availableCount(s.id)}</td>
+      <td>
+        <button class="btn ghost" data-edit-station="${s.id}">
+          <i class="fa-solid fa-pen"></i>Sửa
+        </button>
+        <button class="btn danger" data-del-station="${s.id}">
+          <i class="fa-solid fa-trash"></i>Xoá
+        </button>
+      </td>
+    </tr>
+  `).join("");
 
   // ========= Render: Bikes =========
   function renderBikes(){
