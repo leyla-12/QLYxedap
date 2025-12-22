@@ -38,71 +38,151 @@
           <div class="breadcrumb">Báo cáo / Tổng quan</div>
           <div class="page-title">Báo cáo thống kê</div>
         </div>
+
         <div class="search">
           <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
-          <input placeholder="Tìm nhanh..." />
+          <input id="reportSearch" placeholder="Tìm nhanh trong báo cáo..." />
         </div>
+
         <div class="profile">
-          <div class="avatar">AD</div>
-          <div class="who"><b>Admin</b><span>Quản trị viên</span></div>
+          <img id="topbarAvatar" class="avatar" alt="avatar" src="./assets/img/admin.png" style="width:40px;height:40px;border-radius:999px;object-fit:cover"/>
+          <div class="who"><b id="topbarName">Admin</b><span id="topbarRole">Quản trị viên</span></div>
         </div>
       </div>
     </div>
 
+    <!-- KPIs -->
     <div class="kpis">
-      <div class="kpi"><div class="label">Số trạm</div><div class="value" id="kpiStations">0</div><div class="hint">Tổng trạm</div></div>
-      <div class="kpi"><div class="label">Số xe</div><div class="value" id="kpiBikes">0</div><div class="hint">Tổng xe</div></div>
-      <div class="kpi"><div class="label">Doanh thu (tổng)</div><div class="value" id="kpiRevenue">0đ</div><div class="hint">Tổng phát sinh</div></div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="card-h"><b>Báo cáo trạm xe</b></div>
-        <div class="card-b">
-          <table class="table">
-            <thead><tr><th>Mã trạm</th><th>Tên</th><th>Địa chỉ</th><th>Sức chứa</th></tr></thead>
-            <tbody id="reportStationTbody"></tbody>
-          </table>
-        </div>
+      <div class="kpi">
+        <div class="label">Số trạm</div>
+        <div class="value" id="kpiStations">0</div>
+        <div class="hint">Tổng trạm</div>
       </div>
-
-      <div class="card">
-        <div class="card-h"><b>Báo cáo xe đạp</b></div>
-        <div class="card-b">
-          <table class="table">
-            <thead><tr><th>Mã xe</th><th>Trạng thái</th><th>Trạm</th></tr></thead>
-            <tbody id="reportBikeTbody"></tbody>
-          </table>
-        </div>
+      <div class="kpi">
+        <div class="label">Số xe</div>
+        <div class="value" id="kpiBikes">0</div>
+        <div class="hint">Tổng xe</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Doanh thu (lọc)</div>
+        <div class="value" id="kpiRevenue">0đ</div>
+        <div class="hint" id="kpiRangeHint">Theo khoảng thời gian</div>
       </div>
     </div>
 
+    <!-- FILTER BAR -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-h" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <b><i class="fa-solid fa-filter"></i> Bộ lọc thời gian</b>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <label style="display:flex;gap:8px;align-items:center">
+            <span style="color:#64748b;font-weight:600">Từ</span>
+            <input id="fromDate" type="date" class="input" style="height:38px;padding:0 10px;border-radius:10px;border:1px solid #e2e8f0"/>
+          </label>
+
+          <label style="display:flex;gap:8px;align-items:center">
+            <span style="color:#64748b;font-weight:600">Đến</span>
+            <input id="toDate" type="date" class="input" style="height:38px;padding:0 10px;border-radius:10px;border:1px solid #e2e8f0"/>
+          </label>
+
+          <button class="btn ghost" id="btnPreset7"><i class="fa-solid fa-clock"></i>7 ngày</button>
+          <button class="btn ghost" id="btnPreset30"><i class="fa-solid fa-calendar-days"></i>30 ngày</button>
+          <button class="btn ghost" id="btnPresetAll"><i class="fa-solid fa-infinity"></i>Tất cả</button>
+
+          <button class="btn primary" id="btnApplyFilter"><i class="fa-solid fa-check"></i>Áp dụng</button>
+        </div>
+      </div>
+      <div class="card-b" style="color:#64748b">
+        * Lọc thời gian áp dụng mạnh nhất cho <b>Hoá đơn</b> và <b>Chuyến đi</b>. Với <b>Khách hàng</b>, hệ thống sẽ hiển thị “khách phát sinh giao dịch/chuyến đi trong khoảng”.
+      </div>
+    </div>
+
+    <!-- REPORT TABS (thanh báo cáo) -->
     <div class="grid" style="margin-top:16px">
-      <div class="card">
-        <div class="card-h"><b>Báo cáo khách hàng</b></div>
-        <div class="card-b">
-          <table class="table">
-            <thead><tr><th>Mã KH</th><th>Họ tên</th><th>Giới tính</th><th>SĐT</th><th>Số dư</th></tr></thead>
-            <tbody id="reportCustomerTbody"></tbody>
-          </table>
+      <div class="card report-tab" data-tab="stations" style="cursor:pointer">
+        <div class="card-b" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="color:#64748b;font-weight:700">Báo cáo trạm xe</div>
+            <div style="font-size:24px;font-weight:900" id="tabCountStations">0</div>
+          </div>
+          <i class="fa-solid fa-location-dot" style="font-size:22px;color:#94a3b8"></i>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-h"><b>Báo cáo hoá đơn</b></div>
-        <div class="card-b">
-          <table class="table">
-            <thead><tr><th>Mã HĐ</th><th>Mã KH</th><th>Loại</th><th>Số tiền</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
-            <tbody id="reportInvoiceTbody"></tbody>
-          </table>
+      <div class="card report-tab" data-tab="bikes" style="cursor:pointer">
+        <div class="card-b" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="color:#64748b;font-weight:700">Báo cáo xe đạp</div>
+            <div style="font-size:24px;font-weight:900" id="tabCountBikes">0</div>
+          </div>
+          <i class="fa-solid fa-bicycle" style="font-size:22px;color:#94a3b8"></i>
+        </div>
+      </div>
+
+      <div class="card report-tab" data-tab="customers" style="cursor:pointer">
+        <div class="card-b" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="color:#64748b;font-weight:700">Báo cáo khách hàng</div>
+            <div style="font-size:24px;font-weight:900" id="tabCountCustomers">0</div>
+          </div>
+          <i class="fa-solid fa-users" style="font-size:22px;color:#94a3b8"></i>
+        </div>
+      </div>
+
+      <div class="card report-tab" data-tab="invoices" style="cursor:pointer">
+        <div class="card-b" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="color:#64748b;font-weight:700">Báo cáo hoá đơn</div>
+            <div style="font-size:24px;font-weight:900" id="tabCountInvoices">0</div>
+          </div>
+          <i class="fa-solid fa-receipt" style="font-size:22px;color:#94a3b8"></i>
+        </div>
+      </div>
+
+      <div class="card report-tab" data-tab="trips" style="cursor:pointer">
+        <div class="card-b" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="color:#64748b;font-weight:700">Báo cáo chuyến đi</div>
+            <div style="font-size:24px;font-weight:900" id="tabCountTrips">0</div>
+          </div>
+          <i class="fa-solid fa-route" style="font-size:22px;color:#94a3b8"></i>
         </div>
       </div>
     </div>
 
-    <div class="note">Báo cáo lấy dữ liệu thật từ LocalStorage (cùng nguồn dữ liệu với các màn CRUD).</div>
+    <!-- REPORT VIEW -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-h" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <b id="reportTitle">Báo cáo trạm xe</b>
+          <div style="color:#64748b;font-size:13px" id="reportSub">Dữ liệu lấy từ LocalStorage (TNGO_DB_V1)</div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn ghost" id="btnRefreshReport"><i class="fa-solid fa-rotate"></i>Làm mới</button>
+          <button class="btn primary" id="btnExportCurrent"><i class="fa-solid fa-file-export"></i>Xuất báo cáo (CSV)</button>
+        </div>
+      </div>
+
+      <div class="card-b" style="overflow:auto">
+        <table class="table" id="reportTable">
+          <thead id="reportThead"></thead>
+          <tbody id="reportTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:12px">
+      Tip: Click vào từng “thanh báo cáo” phía trên để xem chi tiết và xuất file theo đúng báo cáo đang mở.
+    </div>
   </main>
 </div>
+
 <script src="./assets/js/auth.js"></script>
 <script src="./assets/js/script.js"></script>
+
+<!-- file mới để xử lý giao diện báo cáo -->
+<script src="./assets/js/bao-cao.js"></script>
 </body>
 </html>
