@@ -10,6 +10,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css" />
+  <style>
+  .report-tabs{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:4px 2px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+  .report-tabs::-webkit-scrollbar{
+    height:8px;
+  }
+  .report-tabs::-webkit-scrollbar-thumb{
+    background:#e2e8f0;
+    border-radius:999px;
+  }
+
+  .report-pill{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-radius:14px;
+    border:1px solid #e2e8f0;
+    background:#fff;
+    color:#0f172a;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    min-width:180px;   /* 👈 chỉnh nhỏ/bé tại đây */
+    scroll-snap-align:start;
+    transition:.15s ease;
+  }
+  .report-pill i{
+    color:#94a3b8;
+    font-size:16px;
+  }
+  .report-pill:hover{
+    border-color:#cbd5e1;
+    transform:translateY(-1px);
+  }
+</style>
+
 </head>
 
 <body>
