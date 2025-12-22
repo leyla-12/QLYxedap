@@ -49,14 +49,19 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid one">
       <!-- DANH SÁCH TRẠM -->
       <div class="card">
         <div class="card-h">
           <b>Danh sách trạm</b>
-          <button class="btn ghost" id="exportStations">
-            <i class="fa-solid fa-file-export"></i>Xuất CSV
-          </button>
+          <div class="card-actions">
+            <button class="btn primary" id="btnOpenAddStation">
+              <i class="fa-solid fa-plus"></i>Thêm trạm
+            </button>
+            <button class="btn ghost" id="exportStations">
+              <i class="fa-solid fa-file-export"></i>Xuất CSV
+            </button>
+          </div>
         </div>
 
         <div class="card-b">
@@ -67,7 +72,7 @@
                 <th>Tên trạm</th>
                 <th>Địa chỉ</th>
                 <th style="width:140px">Xe khả dụng</th>
-                <th style="width:160px">Hành động</th>
+                <th style="width:170px">Hành động</th>
               </tr>
             </thead>
 
@@ -76,38 +81,7 @@
 
           <div class="note">
             Gợi ý: “Xe khả dụng” = số xe có trạng thái <b>đang đậu</b> tại trạm (tự động thống kê).
-            Bấm “Sửa” sẽ đổ dữ liệu lên form bên phải.
-          </div>
-        </div>
-      </div>
-
-      <!-- THÊM / CẬP NHẬT TRẠM -->
-      <div class="card">
-        <div class="card-h"><b>Thêm / Cập nhật trạm</b></div>
-        <div class="card-b">
-          <div class="field">
-            <div class="label">Mã trạm (có thể để trống để tự sinh)</div>
-            <input class="input" id="stationId" placeholder="VD: TR04" />
-          </div>
-
-          <div class="field">
-            <div class="label">Tên trạm</div>
-            <input class="input" id="stationName" placeholder="VD: Xuân Thủy" />
-          </div>
-
-          <div class="field">
-            <div class="label">Địa chỉ</div>
-            <input class="input" id="stationAddress" placeholder="VD: 56 Xuân Thủy, Cầu Giấy" />
-          </div>
-
-          <div style="margin-top:10px">
-            <button class="btn primary" id="btnAddStation">
-              <i class="fa-solid fa-plus"></i>Lưu trạm
-            </button>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            Lưu ý: Trạm gồm Mã/Tên/Địa chỉ. “Xe khả dụng” tự tính theo danh sách xe.
+            Bấm “Sửa” để mở form cập nhật.
           </div>
         </div>
       </div>
@@ -115,7 +89,53 @@
   </main>
 </div>
 
+<!-- Overlay + Drawer (ẩn mặc định) -->
+<div class="overlay" id="stationOverlay" hidden></div>
+
+<aside class="drawer" id="stationDrawer" aria-hidden="true">
+  <div class="drawer-h">
+    <div>
+      <div class="drawer-title" id="stationDrawerTitle">Thêm trạm</div>
+      <div class="drawer-sub" id="stationDrawerSub">Nhập thông tin trạm và bấm Lưu</div>
+    </div>
+    <button class="icon-btn" id="stationDrawerClose" title="Đóng">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="drawer-b">
+    <div class="field">
+      <div class="label">Mã trạm (có thể để trống để tự sinh)</div>
+      <input class="input" id="stationId" placeholder="VD: TR04" />
+      <div class="help">Khi sửa: mã trạm sẽ bị khóa để tránh đổi key dữ liệu.</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Tên trạm</div>
+      <input class="input" id="stationName" placeholder="VD: Xuân Thủy" />
+    </div>
+
+    <div class="field">
+      <div class="label">Địa chỉ</div>
+      <input class="input" id="stationAddress" placeholder="VD: 56 Xuân Thủy, Cầu Giấy" />
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn ghost" id="btnCancelStation">
+        <i class="fa-regular fa-circle-xmark"></i>Hủy
+      </button>
+      <button class="btn primary" id="btnSaveStation">
+        <i class="fa-solid fa-floppy-disk"></i>Lưu
+      </button>
+    </div>
+
+    <div class="note" style="margin-top:10px">
+      Lưu ý: Trạm gồm Mã/Tên/Địa chỉ. “Xe khả dụng” tự tính theo danh sách xe.
+    </div>
+  </div>
+</aside>
+
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js?v=3"></script>
+<script src="./assets/js/script.js?v=4"></script>
 </body>
 </html>
