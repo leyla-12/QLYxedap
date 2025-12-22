@@ -25,7 +25,7 @@
       <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
       <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
       <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
-      <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
+      <li><a class="menu-item active" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
       <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
       <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
     </ul>
@@ -56,8 +56,8 @@
           <div class="row">
             <select class="select" id="tripStatusFilter">
               <option value="">Lọc theo trạng thái</option>
-              <option>đang chạy</option>
-              <option>hoàn tất</option>
+              <option value="đang chạy">đang chạy</option>
+              <option value="hoàn tất">hoàn tất</option>
             </select>
             <button class="btn ghost" id="exportTrips"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
           </div>
@@ -66,8 +66,15 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Mã chuyến</th><th>Khách hàng</th><th>Mã xe</th><th>Trạm bắt đầu</th>
-                <th>Bắt đầu</th><th>Kết thúc</th><th>Phí</th><th>Trạng thái</th><th>Hành động</th>
+                <th>Mã chuyến</th>
+                <th>Khách hàng</th>
+                <th>Mã xe</th>
+                <th>Trạm bắt đầu</th>
+                <th>Bắt đầu</th>
+                <th>Kết thúc</th>
+                <th>Phí</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody id="tripTbody"></tbody>
@@ -95,18 +102,29 @@
             <div class="label">Trạm bắt đầu</div>
             <input class="input" id="tripStationId" placeholder="VD: TR01" />
           </div>
+
           <div class="field">
             <div class="label">Thời gian bắt đầu</div>
-            <input class="input" id="tripStartTime" placeholder="Để trống sẽ lấy thời gian hiện tại" />
+            <!-- datetime-local giúp tránh “undefined” do nhập sai -->
+            <input class="input" id="tripStartTime" type="datetime-local" />
+            <div class="note" style="margin-top:6px">Để trống sẽ tự lấy thời gian hiện tại.</div>
           </div>
-          <div style="margin-top:10px">
-            <button class="btn primary" id="btnSaveTrip"><i class="fa-solid fa-plus"></i>Lưu chuyến (đang chạy)</button>
+
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" id="btnSaveTrip">
+              <i class="fa-solid fa-plus"></i>Lưu chuyến (đang chạy)
+            </button>
+            <!-- Nếu script.js có hỗ trợ kết thúc -->
+            <button class="btn ghost" id="btnFinishTrip" type="button">
+              <i class="fa-solid fa-flag-checkered"></i>Kết thúc chuyến
+            </button>
           </div>
         </div>
       </div>
     </div>
   </main>
 </div>
+
 <script src="./assets/js/auth.js"></script>
 <script src="./assets/js/script.js"></script>
 </body>
