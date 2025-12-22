@@ -22,7 +22,7 @@
     <div class="nav-title">Navigation</div>
     <ul class="nav">
       <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
-      <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
+      <li><a class="menu-item active" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
       <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
       <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
       <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
@@ -50,24 +50,55 @@
     </div>
 
     <div class="grid">
+      <!-- DANH SÁCH TRẠM -->
       <div class="card">
         <div class="card-h">
           <b>Danh sách trạm</b>
-          <button class="btn ghost" id="exportStations"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+          <button class="btn ghost" id="exportStations">
+            <i class="fa-solid fa-file-export"></i>Xuất CSV
+          </button>
         </div>
+
         <div class="card-b">
           <table class="table">
             <thead>
               <tr>
-                <th>Mã trạm</th><th>Tên trạm</th><th>Địa chỉ</th><th>Sức chứa</th><th>Hành động</th>
+                <th style="width:110px">Mã trạm</th>
+                <th>Tên trạm</th>
+                <th>Địa chỉ</th>
+
+                <!-- Thuộc tính cố định của trạm -->
+                <th style="width:110px">Sức chứa</th>
+
+                <!-- Chỉ số thống kê: tự tính từ danh sách xe đang “đang đậu” tại trạm -->
+                <th style="width:140px">Xe khả dụng</th>
+
+                <th style="width:160px">Hành động</th>
               </tr>
             </thead>
+
+            <!--
+              stationTbody sẽ được script.js render theo dạng:
+              <tr>
+                <td>TR01</td>
+                <td>Cầu Giấy</td>
+                <td>123 Trần Duy Hưng</td>
+                <td>30</td>
+                <td>12</td>  <-- số xe “đang đậu” tại TR01 (tự tính)
+                <td>...</td>
+              </tr>
+            -->
             <tbody id="stationTbody"></tbody>
           </table>
-          <div class="note">Gợi ý: bấm “Sửa” sẽ đổ dữ liệu lên form bên phải.</div>
+
+          <div class="note">
+            Gợi ý: “Xe khả dụng” = số xe có trạng thái <b>đang đậu</b> tại trạm (tự động thống kê).
+            Bấm “Sửa” sẽ đổ dữ liệu lên form bên phải.
+          </div>
         </div>
       </div>
 
+      <!-- THÊM / CẬP NHẬT TRẠM -->
       <div class="card">
         <div class="card-h"><b>Thêm / Cập nhật trạm</b></div>
         <div class="card-b">
@@ -75,26 +106,37 @@
             <div class="label">Mã trạm (có thể để trống để tự sinh)</div>
             <input class="input" id="stationId" placeholder="VD: TR04" />
           </div>
+
           <div class="field">
             <div class="label">Tên trạm</div>
             <input class="input" id="stationName" placeholder="VD: Xuân Thủy" />
           </div>
+
           <div class="field">
             <div class="label">Địa chỉ</div>
-            <input class="input" id="stationAddress" placeholder="VD: Cầu Giấy" />
+            <input class="input" id="stationAddress" placeholder="VD: 56 Xuân Thủy, Cầu Giấy" />
           </div>
+
           <div class="field">
-            <div class="label">Sức chứa</div>
-            <input class="input" id="stationCapacity" type="number" placeholder="VD: 30" />
+            <div class="label">Sức chứa (tối đa xe có thể chứa)</div>
+            <input class="input" id="stationCapacity" type="number" min="1" placeholder="VD: 30" />
           </div>
+
           <div style="margin-top:10px">
-            <button class="btn primary" id="btnAddStation"><i class="fa-solid fa-plus"></i>Lưu trạm</button>
+            <button class="btn primary" id="btnAddStation">
+              <i class="fa-solid fa-plus"></i>Lưu trạm
+            </button>
+          </div>
+
+          <div class="note" style="margin-top:10px">
+            Lưu ý: “Sức chứa” là thuộc tính trạm. “Xe khả dụng” sẽ được hệ thống tự thống kê theo danh sách xe.
           </div>
         </div>
       </div>
     </div>
   </main>
 </div>
+
 <script src="./assets/js/auth.js"></script>
 <script src="./assets/js/script.js"></script>
 </body>
