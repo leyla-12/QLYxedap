@@ -24,7 +24,7 @@
       <li><a class="menu-item" href="index.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
       <li><a class="menu-item" href="tram-xe.html"><i class="fa-solid fa-location-dot"></i>Quản lý trạm xe</a></li>
       <li><a class="menu-item" href="xe-dap.html"><i class="fa-solid fa-bicycle"></i>Quản lý xe đạp</a></li>
-      <li><a class="menu-item" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
+      <li><a class="menu-item active" href="khach-hang.html"><i class="fa-solid fa-users"></i>Quản lý khách hàng</a></li>
       <li><a class="menu-item" href="chuyen-di.html"><i class="fa-solid fa-route"></i>Quản lý chuyến đi</a></li>
       <li><a class="menu-item" href="hoa-don.html"><i class="fa-solid fa-receipt"></i>Quản lý hoá đơn</a></li>
       <li><a class="menu-item" href="bao-cao.html"><i class="fa-solid fa-chart-line"></i>Báo cáo thống kê</a></li>
@@ -49,92 +49,131 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid one">
       <div class="card">
         <div class="card-h">
           <b>Danh sách khách hàng</b>
-          <div class="row">
+          <div class="card-actions">
+            <button class="btn primary" id="btnOpenAddCustomer">
+              <i class="fa-solid fa-plus"></i>Thêm khách hàng
+            </button>
             <select class="select" id="customerGenderFilter">
               <option value="">Lọc theo giới tính</option>
               <option>Nữ</option>
               <option>Nam</option>
             </select>
-            <button class="btn ghost" id="exportCustomers"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+            <button class="btn ghost" id="exportCustomers">
+              <i class="fa-solid fa-file-export"></i>Xuất CSV
+            </button>
           </div>
         </div>
+
         <div class="card-b">
           <table class="table">
             <thead>
-              <tr><th>Mã KH</th><th>Họ tên</th><th>Giới tính</th><th>SĐT</th><th>Số dư ví</th><th>Hành động</th></tr>
+              <tr>
+                <th style="width:120px">Mã KH</th>
+                <th>Họ tên</th>
+                <th style="width:120px">Giới tính</th>
+                <th style="width:140px">SĐT</th>
+                <th style="width:140px">Số dư ví</th>
+                <th style="width:170px">Hành động</th>
+              </tr>
             </thead>
             <tbody id="customerTbody"></tbody>
           </table>
-          <div class="note">Bấm “Sửa” sẽ đổ dữ liệu lên form bên phải.</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-h"><b>Thêm / Cập nhật khách hàng</b></div>
-          <div class="card-b">
-            <div class="field">
-              <div class="label">Mã KH (để trống để tự sinh)</div>
-              <input class="input" id="customerId" placeholder="VD: KH120" />
-            </div>
-            <div class="field">
-              <div class="label">Họ tên</div>
-              <input class="input" id="customerName" placeholder="VD: Lò Thị Tuyết Nhung" />
-            </div>
-            <div class="field">
-              <div class="label">Giới tính</div>
-              <select class="select" id="customerGender">
-                <option>Nữ</option>
-                <option>Nam</option>
-              </select>
-            </div>
-            <div class="field">
-              <div class="label">SĐT</div>
-              <input class="input" id="customerPhone" placeholder="VD: 09xxxxxxxx" />
-            </div>
-            <div class="field">
-              <div class="label">Số dư ví</div>
-              <input class="input" id="customerWallet" type="number" placeholder="VD: 50000" />
-            </div>
-            <div style="margin-top:10px">
-              <button class="btn primary" id="btnAddCustomer"><i class="fa-solid fa-plus"></i>Lưu khách hàng</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-h"><b>Nạp tiền vào ví (mô phỏng)</b></div>
-          <div class="card-b">
-            <div class="field">
-              <div class="label">Mã KH</div>
-              <input class="input" id="topupCustomerId" placeholder="VD: KH014" />
-            </div>
-            <div class="field">
-              <div class="label">Số tiền nạp</div>
-              <input class="input" id="topupAmount" type="number" placeholder="VD: 50000" />
-            </div>
-            <div class="field">
-              <div class="label">Trạng thái</div>
-              <select class="select" id="topupStatus">
-                <option>thành công</option>
-                <option>thất bại</option>
-              </select>
-            </div>
-            <div style="margin-top:10px">
-              <button class="btn primary" id="btnTopup"><i class="fa-solid fa-receipt"></i>Tạo hoá đơn nạp tiền</button>
-            </div>
-            <div class="note">Nếu nạp thành công: ví tăng + lưu lịch sử hoá đơn.</div>
-          </div>
+          <div class="note">Bấm “Sửa” để mở drawer. Nạp tiền cũng nằm trong drawer này.</div>
         </div>
       </div>
     </div>
   </main>
 </div>
+
+<!-- Overlay + Drawer -->
+<div class="overlay" id="customerOverlay" hidden></div>
+
+<aside class="drawer" id="customerDrawer" aria-hidden="true">
+  <div class="drawer-h">
+    <div>
+      <div class="drawer-title" id="customerDrawerTitle">Thêm khách hàng</div>
+      <div class="drawer-sub" id="customerDrawerSub">Nhập thông tin và bấm Lưu</div>
+    </div>
+    <button class="icon-btn" id="customerDrawerClose" title="Đóng">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="drawer-b">
+    <div class="field">
+      <div class="label">Mã KH (để trống để tự sinh)</div>
+      <input class="input" id="customerId" placeholder="VD: KH120" />
+      <div class="help">Khi sửa: mã KH sẽ bị khóa.</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Họ tên</div>
+      <input class="input" id="customerName" placeholder="VD: Lò Thị Tuyết Nhung" />
+    </div>
+
+    <div class="field">
+      <div class="label">Giới tính</div>
+      <select class="select" id="customerGender">
+        <option>Nữ</option>
+        <option>Nam</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="label">SĐT</div>
+      <input class="input" id="customerPhone" placeholder="VD: 09xxxxxxxx" />
+    </div>
+
+    <div class="field">
+      <div class="label">Số dư ví</div>
+      <input class="input" id="customerWallet" type="number" placeholder="VD: 50000" />
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn ghost" id="btnCancelCustomer">
+        <i class="fa-regular fa-circle-xmark"></i>Hủy
+      </button>
+      <button class="btn primary" id="btnSaveCustomer">
+        <i class="fa-solid fa-floppy-disk"></i>Lưu
+      </button>
+    </div>
+
+    <hr class="divider"/>
+
+    <div class="section-title">
+      <i class="fa-solid fa-wallet"></i> Nạp tiền (mô phỏng)
+    </div>
+
+    <div class="field">
+      <div class="label">Số tiền nạp</div>
+      <input class="input" id="topupAmount" type="number" placeholder="VD: 50000" />
+    </div>
+
+    <div class="field">
+      <div class="label">Trạng thái</div>
+      <select class="select" id="topupStatus">
+        <option>thành công</option>
+        <option>thất bại</option>
+      </select>
+    </div>
+
+    <div style="margin-top:10px">
+      <button class="btn primary" id="btnTopup">
+        <i class="fa-solid fa-receipt"></i>Tạo hoá đơn nạp tiền
+      </button>
+    </div>
+
+    <div class="note" style="margin-top:10px">
+      Nạp tiền sẽ áp dụng cho <b>khách hàng đang mở drawer</b> (không nhập mã KH nữa).
+    </div>
+  </div>
+</aside>
+
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js?v=4"></script>
 </body>
 </html>
