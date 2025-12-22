@@ -35,6 +35,9 @@ a{color:inherit}
   color:#fff;
   padding:18px 14px;
   overflow:auto;
+
+  /* ✅ FIX: để sidebar-logout absolute hoạt động đúng */
+  position: fixed;
 }
 .brand{
   display:flex; align-items:center; gap:10px;
@@ -142,6 +145,15 @@ a{color:inherit}
   grid-template-columns: 2fr 1.2fr;
   gap:16px;
 }
+
+/* ✅ NEW: 1 cột khi bỏ form/phiếu bên phải */
+.grid.one{
+  grid-template-columns: 1fr !important;
+}
+.grid.one > .card{
+  grid-column: 1 / -1;
+}
+
 .card{
   background:var(--card);
   border:1px solid var(--line);
@@ -204,6 +216,15 @@ a{color:inherit}
 .btn.danger{background:#fee2e2; color:#991b1b}
 .btn:disabled{opacity:.5; cursor:not-allowed}
 
+/* ✅ NEW: action row + mini button */
+.row-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.btn.mini{
+  padding:8px 10px;
+  border-radius:12px;
+  font-weight:800;
+  font-size:13px;
+}
+
 /* Table */
 .table{width:100%; border-collapse:collapse}
 .table th{
@@ -237,13 +258,70 @@ a{color:inherit}
   color:var(--muted);
 }
 
+/* ✅ NEW: Drawer + Overlay (form sửa/thêm kiểu popup bên phải) */
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .45);
+  z-index: 999;
+}
+
+.drawer{
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(520px, 92vw);
+  background: #fff;
+  border-left: 1px solid var(--line);
+  box-shadow: -20px 0 50px rgba(2, 6, 23, .15);
+  transform: translateX(110%);
+  transition: transform .2s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.open{ transform: translateX(0); }
+
+.drawer-h{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  padding:16px 16px 10px;
+  border-bottom:1px solid var(--line);
+}
+
+.drawer-title{ font-weight:900; font-size:18px; }
+.drawer-sub{ color:var(--muted); font-size:13px; margin-top:4px; }
+.drawer-b{ padding:16px; overflow:auto; }
+
+.drawer-actions{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+
+.icon-btn{
+  width:40px;height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  cursor:pointer;
+}
+
 /* Responsive */
 @media (max-width: 1050px){
   .grid{grid-template-columns:1fr}
   .search{display:none}
 }
+
 html, body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
 /* ===== LOGIN (1-COLUMN) ===== */
 .login-page { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 .login-bg{
@@ -325,6 +403,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 }
 .social-btn:hover{ background: rgba(148,163,184,.18); }
 .login-copy{ color:#94a3b8; font-size:12px; }
+
 /* Logout pinned bottom-left inside sidebar (global) */
 .sidebar-logout{
   position: absolute;
