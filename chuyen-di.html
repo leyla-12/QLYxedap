@@ -49,19 +49,25 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid one">
       <div class="card">
         <div class="card-h">
           <b>Danh sách chuyến đi</b>
-          <div class="row">
+          <div class="card-actions">
+            <button class="btn primary" id="btnOpenAddTrip">
+              <i class="fa-solid fa-plus"></i>Thêm chuyến
+            </button>
             <select class="select" id="tripStatusFilter">
               <option value="">Lọc theo trạng thái</option>
               <option value="đang chạy">đang chạy</option>
               <option value="hoàn tất">hoàn tất</option>
             </select>
-            <button class="btn ghost" id="exportTrips"><i class="fa-solid fa-file-export"></i>Xuất CSV</button>
+            <button class="btn ghost" id="exportTrips">
+              <i class="fa-solid fa-file-export"></i>Xuất CSV
+            </button>
           </div>
         </div>
+
         <div class="card-b">
           <table class="table">
             <thead>
@@ -74,58 +80,78 @@
                 <th>Kết thúc</th>
                 <th>Phí</th>
                 <th>Trạng thái</th>
-                <th>Hành động</th>
+                <th style="width:170px">Hành động</th>
               </tr>
             </thead>
             <tbody id="tripTbody"></tbody>
           </table>
-          <div class="note">Kết thúc chuyến → tự tạo hoá đơn trả cước + trừ ví + trả xe về trạm.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><b>Tạo / Sửa chuyến đi</b></div>
-        <div class="card-b">
-          <div class="field">
-            <div class="label">Mã chuyến (để trống để tự sinh)</div>
-            <input class="input" id="tripId" placeholder="VD: CD120" />
-          </div>
-          <div class="field">
-            <div class="label">Mã KH</div>
-            <input class="input" id="tripCustomerId" placeholder="VD: KH014" />
-          </div>
-          <div class="field">
-            <div class="label">Mã xe</div>
-            <input class="input" id="tripBikeId" placeholder="VD: XE001" />
-          </div>
-          <div class="field">
-            <div class="label">Trạm bắt đầu</div>
-            <input class="input" id="tripStationId" placeholder="VD: TR01" />
-          </div>
-
-          <div class="field">
-            <div class="label">Thời gian bắt đầu</div>
-            <!-- datetime-local giúp tránh “undefined” do nhập sai -->
-            <input class="input" id="tripStartTime" type="datetime-local" />
-            <div class="note" style="margin-top:6px">Để trống sẽ tự lấy thời gian hiện tại.</div>
-          </div>
-
-          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn primary" id="btnSaveTrip">
-              <i class="fa-solid fa-plus"></i>Lưu chuyến (đang chạy)
-            </button>
-            <!-- Nếu script.js có hỗ trợ kết thúc -->
-            <button class="btn ghost" id="btnFinishTrip" type="button">
-              <i class="fa-solid fa-flag-checkered"></i>Kết thúc chuyến
-            </button>
-          </div>
+          <div class="note">Kết thúc chuyến → có thể tự tạo hoá đơn + trừ ví + trả xe về trạm (nếu JS bạn đang có logic).</div>
         </div>
       </div>
     </div>
   </main>
 </div>
 
+<!-- Overlay + Drawer -->
+<div class="overlay" id="tripOverlay" hidden></div>
+
+<aside class="drawer" id="tripDrawer" aria-hidden="true">
+  <div class="drawer-h">
+    <div>
+      <div class="drawer-title" id="tripDrawerTitle">Thêm chuyến</div>
+      <div class="drawer-sub" id="tripDrawerSub">Nhập thông tin và bấm Lưu</div>
+    </div>
+    <button class="icon-btn" id="tripDrawerClose" title="Đóng">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="drawer-b">
+    <div class="field">
+      <div class="label">Mã chuyến (để trống để tự sinh)</div>
+      <input class="input" id="tripId" placeholder="VD: CD120" />
+      <div class="help">Khi sửa: mã chuyến sẽ bị khóa.</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Mã KH</div>
+      <input class="input" id="tripCustomerId" placeholder="VD: KH014" />
+    </div>
+
+    <div class="field">
+      <div class="label">Mã xe</div>
+      <input class="input" id="tripBikeId" placeholder="VD: XE001" />
+    </div>
+
+    <div class="field">
+      <div class="label">Trạm bắt đầu</div>
+      <input class="input" id="tripStationId" placeholder="VD: TR01" />
+    </div>
+
+    <div class="field">
+      <div class="label">Thời gian bắt đầu</div>
+      <input class="input" id="tripStartTime" type="datetime-local" />
+      <div class="note" style="margin-top:6px">Để trống sẽ tự lấy thời gian hiện tại.</div>
+    </div>
+
+    <div class="drawer-actions" style="justify-content:space-between">
+      <button class="btn ghost" id="btnCancelTrip">
+        <i class="fa-regular fa-circle-xmark"></i>Hủy
+      </button>
+
+      <div style="display:flex; gap:10px">
+        <button class="btn ghost" id="btnFinishTrip" type="button">
+          <i class="fa-solid fa-flag-checkered"></i>Kết thúc
+        </button>
+        <button class="btn primary" id="btnSaveTrip">
+          <i class="fa-solid fa-floppy-disk"></i>Lưu
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>
+
 <script src="./assets/js/auth.js"></script>
-<script src="./assets/js/script.js"></script>
+<script src="./assets/js/script.js?v=4"></script>
 </body>
 </html>
