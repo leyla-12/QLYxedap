@@ -17,10 +17,8 @@
   // Chuẩn hoá SĐT: chỉ giữ số (bỏ khoảng trắng, dấu chấm, +84...)
   function normalizePhone(input) {
     let s = String(input || "").trim();
-    // đổi +84xxxxxxxxx -> 0xxxxxxxxx (nếu bạn muốn)
     s = s.replace(/\s+/g, "");
     s = s.replace(/^\+?84/, "0");
-    // chỉ giữ chữ số
     s = s.replace(/\D/g, "");
     return s;
   }
@@ -40,7 +38,6 @@
   }
 
   // dùng cho trang đăng nhập
-  // phoneInput: SĐT người dùng nhập
   function handleLogin(phoneInput, password, remember = true) {
     const phone = normalizePhone(phoneInput);
     const p = String(password || "").trim();
@@ -109,7 +106,6 @@
     const avaEl  = document.getElementById("topbarAvatar");
     const outBtn = document.getElementById("btnLogout");
 
-    // hiển thị name, nếu không có name thì fallback sang phone
     if (nameEl) nameEl.textContent = sess.name || sess.phone || "";
     if (roleEl) roleEl.textContent = roleLabel(sess.role);
     if (avaEl)  avaEl.src = sess.avatar || "./assets/img/admin.png";
@@ -162,6 +158,70 @@
     const pad = (x) => String(x).padStart(2, "0");
     return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
+
+  // ✅ NEW: cuộn tới form + highlight + focus
+  function scrollToAndFocusByFieldIds(fieldIds) {
+    let el = null;
+    for (const id of fieldIds) {
+      const x = document.getElementById(id);
+      if (x) { el = x; break; }
+    }
+    if (!el) return;
+
+    const container =
+      el.closest("form") ||
+      el.closest(".right") ||
+      el.closest(".panel") ||
+      el.closest(".card") ||
+      el.parentElement;
+
+    (container || el).scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const box = container || el;
+    const old = box.style.boxShadow;
+    box.style.boxShadow = "0 0 0 3px rgba(229,9,20,0.35), 0 12px 30px rgba(0,0,0,0.20)";
+    setTimeout(() => { box.style.boxShadow = old; }, 1200);
+
+    setTimeout(() => {
+      el.focus();
+      try { el.select?.(); } catch {}
+    }, 250);
+  }
+
+  // ✅ NEW: tắt/ẩn mô phỏng “phiếu nạp tiền vào ví” trên trang khách hàng (nếu có)
+  function disableWalletTopupMockUI() {
+    // Nếu bạn có vùng mô phỏng, đặt id/class theo các tên dưới là sẽ tự ẩn
+    const maybeBlocks = [
+      "#topupMock",
+      "#walletTopup",
+      "#napTienVi",
+      ".topup-mock",
+      ".wallet-topup",
+      ".nap-tien-vi",
+      "[data-topup-mock]"
+    ];
+    maybeBlocks.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.display = "none";
+      });
+    });
+
+    // Nếu có nút bấm mô phỏng nạp tiền thì vô hiệu hoá
+    const maybeBtns = [
+      "#btnTopup",
+      "#btnNapTien",
+      "[data-topup]",
+      "[data-action='topup']"
+    ];
+    maybeBtns.forEach(sel => {
+      document.querySelectorAll(sel).forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        btn.style.pointerEvents = "none";
+        btn.title = "Chức năng mô phỏng nạp tiền đã tắt";
+      });
+    });
+  }
 
   // =================== DB (localStorage) ===================
   const dbKey = "TNGO_DB_V1";
@@ -509,31 +569,150 @@
       alert("Đã thêm trạm!");
     });
 
-    // ===== Các phần khác giữ nguyên y như bạn (bike/customer/trip/invoice...) =====
-
-    document.addEventListener("click", (e)=>{
+    // ✅ ONE listener cho tất cả trang: Edit/Delete + cuộn đến form
+    document.addEventListener("click", (e) => {
       const db = getDB();
       const sess = getSession();
 
-      // Stations
+      // ===== Stations =====
       const es = e.target.closest("[data-edit-station]")?.dataset.editStation;
       const ds = e.target.closest("[data-del-station]")?.dataset.delStation;
 
-      if(es){
-        const s = db.stations.find(x=>x.id===es);
-        if(!s) return;
-        $("stationId").value = s.id;
-        $("stationName").value = s.name;
-        $("stationAddress").value = s.address;
-        window.scrollTo({top:0,behavior:"smooth"});
+      if (es) {
+        const s = db.stations.find(x => x.id === es);
+        if (!s) return;
+
+        if ($("stationId")) $("stationId").value = s.id;
+        if ($("stationName")) $("stationName").value = s.name;
+        if ($("stationAddress")) $("stationAddress").value = s.address;
+
+        scrollToAndFocusByFieldIds(["stationName", "stationId", "stationAddress"]);
+        return;
       }
-      if(ds){
+
+      if (ds) {
         if (!guardDelete(sess?.role)) return;
-        if(!confirm("Xoá trạm " + ds + " ?")) return;
-        db.stations = db.stations.filter(x=>x.id!==ds);
+        if (!confirm("Xoá trạm " + ds + " ?")) return;
+        db.stations = db.stations.filter(x => x.id !== ds);
         saveDB(db);
         renderStations(); renderBikes(); renderReports();
         lockDeleteButtonsIfNeeded();
+        return;
+      }
+
+      // ===== Bikes =====
+      const eb = e.target.closest("[data-edit-bike]")?.dataset.editBike;
+      const dbk = e.target.closest("[data-del-bike]")?.dataset.delBike;
+
+      if (eb) {
+        const b = db.bikes.find(x => x.id === eb);
+        if (!b) return;
+
+        if ($("bikeId")) $("bikeId").value = b.id;
+        if ($("bikeStatus")) $("bikeStatus").value = b.status;
+        if ($("bikeStation")) $("bikeStation").value = b.stationId;
+
+        scrollToAndFocusByFieldIds(["bikeId", "bikeStatus", "bikeStation"]);
+        return;
+      }
+
+      if (dbk) {
+        if (!guardDelete(sess?.role)) return;
+        if (!confirm("Xoá xe " + dbk + " ?")) return;
+        db.bikes = db.bikes.filter(x => x.id !== dbk);
+        saveDB(db);
+        renderBikes(); renderStations(); renderReports();
+        lockDeleteButtonsIfNeeded();
+        return;
+      }
+
+      // ===== Customers =====
+      const ec = e.target.closest("[data-edit-customer]")?.dataset.editCustomer;
+      const dc = e.target.closest("[data-del-customer]")?.dataset.delCustomer;
+
+      if (ec) {
+        const c = db.customers.find(x => x.id === ec);
+        if (!c) return;
+
+        if ($("customerId")) $("customerId").value = c.id;
+        if ($("customerName")) $("customerName").value = c.name;
+        if ($("customerGender")) $("customerGender").value = c.gender;
+        if ($("customerPhone")) $("customerPhone").value = c.phone;
+        if ($("customerWallet")) $("customerWallet").value = c.wallet;
+
+        scrollToAndFocusByFieldIds(["customerName", "customerId", "customerPhone"]);
+        return;
+      }
+
+      if (dc) {
+        if (!guardDelete(sess?.role)) return;
+        if (!confirm("Xoá khách hàng " + dc + " ?")) return;
+        db.customers = db.customers.filter(x => x.id !== dc);
+        saveDB(db);
+        renderCustomers(); renderReports();
+        lockDeleteButtonsIfNeeded();
+        return;
+      }
+
+      // ===== Trips =====
+      const et = e.target.closest("[data-edit-trip]")?.dataset.editTrip;
+      const dt = e.target.closest("[data-del-trip]")?.dataset.delTrip;
+
+      if (et) {
+        const t = db.trips.find(x => x.id === et);
+        if (!t) return;
+
+        if ($("tripId")) $("tripId").value = t.id;
+        if ($("tripCustomerId")) $("tripCustomerId").value = t.customerId;
+        if ($("tripBikeId")) $("tripBikeId").value = t.bikeId;
+        if ($("tripStartStationId")) $("tripStartStationId").value = t.startStationId;
+        if ($("tripStartTime")) $("tripStartTime").value = t.startTime;
+        if ($("tripEndTime")) $("tripEndTime").value = t.endTime || "";
+        if ($("tripFee")) $("tripFee").value = t.fee || 0;
+        if ($("tripStatus")) $("tripStatus").value = t.status;
+
+        scrollToAndFocusByFieldIds(["tripId", "tripCustomerId", "tripBikeId"]);
+        return;
+      }
+
+      if (dt) {
+        if (!guardDelete(sess?.role)) return;
+        if (!confirm("Xoá chuyến đi " + dt + " ?")) return;
+        db.trips = db.trips.filter(x => x.id !== dt);
+        saveDB(db);
+        renderTrips(); renderReports();
+        lockDeleteButtonsIfNeeded();
+        return;
+      }
+
+      // ===== Invoices =====
+      const ei = e.target.closest("[data-edit-invoice]")?.dataset.editInvoice;
+      const di = e.target.closest("[data-del-invoice]")?.dataset.delInvoice;
+
+      if (ei) {
+        const i = db.invoices.find(x => x.id === ei);
+        if (!i) return;
+
+        if ($("invoiceId")) $("invoiceId").value = i.id;
+        if ($("invoiceCustomerId")) $("invoiceCustomerId").value = i.customerId;
+        if ($("invoiceType")) $("invoiceType").value = i.type;
+        if ($("invoiceAmount")) $("invoiceAmount").value = i.amount;
+        if ($("invoiceTime")) $("invoiceTime").value = i.time;
+        if ($("invoiceStatus")) $("invoiceStatus").value = i.status;
+        if ($("invoiceRef")) $("invoiceRef").value = i.ref || "";
+
+        scrollToAndFocusByFieldIds(["invoiceId", "invoiceCustomerId", "invoiceAmount"]);
+        return;
+      }
+
+      if (di) {
+        if (!guardDelete(sess?.role)) return;
+        if (!confirm("Xoá hoá đơn " + di + " ?")) return;
+        db.invoices = db.invoices.filter(x => x.id !== di);
+        saveDB(db);
+        renderInvoices(); renderReports();
+        lockDeleteButtonsIfNeeded();
+        return;
       }
     });
   }
@@ -551,6 +730,9 @@
 
     bindActions();
     lockDeleteButtonsIfNeeded();
+
+    // ✅ tắt/ẩn mô phỏng nạp ví ở trang khách hàng (nếu có)
+    disableWalletTopupMockUI();
   }
 
   window.addEventListener("DOMContentLoaded", boot);
