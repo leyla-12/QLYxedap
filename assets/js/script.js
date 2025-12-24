@@ -222,8 +222,9 @@
       { id:"KH014", name:"Trần Minh", gender:"Nam", phone:"0909xxxxxx", wallet:35000 },
     ],
     trips: [
-      { id:"CD1001", customerId:"KH014", bikeId:"XE014", startStationId:"TR02", startTime:"19/12/2025 14:05", endTime:"",                fee:0,     status:"đang chạy" },
-      { id:"CD1002", customerId:"KH001", bikeId:"XE001", startStationId:"TR01", startTime:"18/12/2025 09:12", endTime:"18/12/2025 09:45", fee:12000, status:"hoàn tất" },
+      // ✅ thêm endStationId để hiển thị “Trạm kết thúc” (demo)
+      { id:"CD1001", customerId:"KH014", bikeId:"XE014", startStationId:"TR02", startTime:"19/12/2025 14:05", endTime:"",                endStationId:"",    fee:0,     status:"đang chạy" },
+      { id:"CD1002", customerId:"KH001", bikeId:"XE001", startStationId:"TR01", startTime:"18/12/2025 09:12", endTime:"18/12/2025 09:45", endStationId:"TR01", fee:12000, status:"hoàn tất" },
     ],
     invoices: [
       { id:"HD2001", customerId:"KH014", type:"nạp tiền", amount: 50000, time:"19/12/2025 10:20", status:"thành công", ref:""      },
@@ -468,8 +469,6 @@
       saveDB(db);
       render();
       drawer.close();
-      // update trạm xe khả dụng nếu đang ở trang trạm
-      // (trang khác sẽ tự render lại khi load)
     }
 
     function del(id){
@@ -624,7 +623,6 @@
         if(!id) id = nextId("KH", db.customers);
         if(db.customers.some(c=>c.id===id)) return alert("Mã KH đã tồn tại!");
         db.customers.push({ id, name, gender, phone, wallet });
-        // sau khi thêm xong: chuyển sang edit để có thể nạp tiền nếu muốn
       } else {
         const idx = db.customers.findIndex(c=>c.id===editingId);
         if(idx < 0) return alert("Không tìm thấy khách hàng để cập nhật!");
@@ -820,6 +818,8 @@
           startStationId: stationId,
           startTime: startTimeText,
           endTime: "",
+          // ✅ thêm endStationId cho chuyến mới (chưa kết thúc => rỗng)
+          endStationId: "",
           fee: 0,
           status: "đang chạy"
         });
@@ -866,6 +866,10 @@
       t.fee = fee;
       t.status = "hoàn tất";
 
+      // ✅ DEMO: nếu chưa có trạm kết thúc, set mặc định = trạm bắt đầu
+      // (sau này BE trả trạm kết thúc thật thì chỉ cần gán t.endStationId = <...>)
+      if(!t.endStationId) t.endStationId = t.startStationId;
+
       // invoice trả cước
       const invId = nextId("HD", db.invoices);
       const cus = db.customers.find(c=>c.id===t.customerId);
@@ -891,11 +895,11 @@
         ref: t.id
       });
 
-      // trả xe về trạm bắt đầu (demo)
+      // trả xe về trạm kết thúc (demo: đang set = startStationId nếu chưa có)
       const bike = db.bikes.find(b=>b.id===t.bikeId);
       if(bike){
         bike.status = "đang đậu";
-        bike.stationId = t.startStationId;
+        bike.stationId = t.endStationId || t.startStationId;
       }
 
       saveDB(db);
@@ -944,6 +948,10 @@
             <td>${escapeHtml(t.startStationId)}</td>
             <td>${escapeHtml(t.startTime)}</td>
             <td>${escapeHtml(t.endTime || "-")}</td>
+
+            <!-- ✅ CỘT TRẠM KẾT THÚC (giữa Kết thúc và Phí) -->
+            <td>${escapeHtml(t.endStationId || "-")}</td>
+
             <td>${t.fee ? money(t.fee) : "-"}</td>
             <td><span class="badge ${badgeClass}">${escapeHtml(t.status)}</span></td>
             <td>
@@ -959,7 +967,7 @@
           </tr>
         `;
       }).join("") || `
-        <tr><td colspan="9" style="padding:18px;color:#64748b;text-align:center">Không có dữ liệu</td></tr>
+        <tr><td colspan="10" style="padding:18px;color:#64748b;text-align:center">Không có dữ liệu</td></tr>
       `;
 
       lockDeleteButtonsIfNeeded();
